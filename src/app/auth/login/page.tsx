@@ -1,7 +1,7 @@
 "use client";
 import { Button, Form, Input, message } from "antd";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { GoKey } from "react-icons/go";
 import { useLoginMutation } from "@/store/slices/AuthApi";
@@ -20,6 +20,7 @@ const LoginPage = () => {
         username: values.username,
         password: values.password,
       }).unwrap();
+      console.log(res);
 
       // Agar login muvaffaqiyatli bo'lsa
       messageApi.success("LOGIN SUCCESS");
@@ -27,6 +28,8 @@ const LoginPage = () => {
       // '/projects' sahifasiga yo'naltirish
       router.push("/projects"); // bu yerda router.push yordamida sahifaga o'tish amalga oshiriladi
     } catch (err) {
+      console.log(err);
+
       messageApi.error("LOGIN ERROR");
     }
   };
