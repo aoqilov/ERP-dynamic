@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  overflow: hidden;
+}
+.scroll-content {
+  overflow-y: auto !important;
+  height: 95% !important;
+
+  /* Scrollni yashirish */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scroll-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}

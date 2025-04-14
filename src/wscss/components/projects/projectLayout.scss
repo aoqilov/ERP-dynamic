@@ -1,0 +1,22 @@
+.project {
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .header-inputs {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 30px;
+    column-gap: 50px;
+    margin-top: 30px;
+  }
+}

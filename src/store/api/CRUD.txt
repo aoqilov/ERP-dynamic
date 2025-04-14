@@ -1,0 +1,132 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const apiSlice = createApi({
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://jsonplaceholder.typicode.com",
+  }),
+  endpoints: (builder) => ({
+    // Read (GET - hamma userlarni olish)
+    getUsers: builder.query({
+      query: () => "/users",
+    }),
+
+    // Create (POST - yangi user qo'shish)
+    createUser: builder.mutation({
+      query: (newUser) => ({
+        url: "/users",
+        method: "POST",
+        body: newUser,
+      }),
+    }),
+
+    // Update (PUT - mavjud userni o'zgartirish)
+    updateUser: builder.mutation({
+      query: ({ id, ...updatedData }) => ({
+        url: `/users/${id}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+    }),
+
+    // Delete (DELETE - userni o'chirish)
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "DELETE",
+      }),
+    }),
+  }),
+});
+
+// Custom hooks export
+export const { 
+  useGetUsersQuery, 
+  useCreateUserMutation, 
+  useUpdateUserMutation, 
+  useDeleteUserMutation 
+} = apiSlice;
+
+export default apiSlice.reducer;
+
+
+import { useGetUsersQuery } from "@/redux/apiSlice";
+
+const UsersList = () => {
+  const { data: users, error, isLoading } = useGetUsersQuery();
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching users</p>;
+
+  return (
+    <ul>
+      {users?.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default UsersList;
+
+
+import { useCreateUserMutation } from "@/redux/apiSlice";
+
+const CreateUser = () => {
+  const [createUser] = useCreateUserMutation();
+
+  const handleAddUser = async () => {
+    const newUser = { name: "John Doe", email: "johndoe@gmail.com" };
+    await createUser(newUser);
+  };
+
+  return <button onClick={handleAddUser}>Add User</button>;
+};
+
+export default CreateUser;
+
+import { useUpdateUserMutation } from "@/redux/apiSlice";
+
+const UpdateUser = ({ user }) => {
+  const [updateUser] = useUpdateUserMutation();
+
+  const handleUpdateUser = async () => {
+    await updateUser({ id: user.id, name: "Updated Name" });
+  };
+
+  return <button onClick={handleUpdateUser}>Update User</button>;
+};
+
+export default UpdateUser;
+
+import { useDeleteUserMutation } from "@/redux/apiSlice";
+
+const DeleteUser = ({ userId }) => {
+  const [deleteUser] = useDeleteUserMutation();
+
+  const handleDeleteUser = async () => {
+    await deleteUser(userId);
+  };
+
+  return <button onClick={handleDeleteUser}>Delete User</button>;
+};
+
+export default DeleteUser;
+import UsersList from "./UsersList";
+import CreateUser from "./CreateUser";
+import UpdateUser from "./UpdateUser";
+import DeleteUser from "./DeleteUser";
+
+const UsersPage = () => {
+  return (
+    <div>
+      <h1>Users Management</h1>
+      <CreateUser />
+      <UsersList />
+      {/* Userlarni update va delete qilish uchun map orqali chiqaramiz */}
+      <UsersList />
+    </div>
+  );
+};
+
+export default UsersPage;
