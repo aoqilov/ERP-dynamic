@@ -1,0 +1,53 @@
+.employes {
+  background-color: white;
+  width: 100%;
+  padding: 20px 30px;
+  &__header {
+    .header-text {
+      font-size: 32px;
+      font-weight: 600;
+      color: rgb(0, 0, 0);
+    }
+    .header-description {
+      margin-top: 12px;
+      font-size: 20px;
+      font-weight: 400;
+      color: rgba(122, 122, 122);
+    }
+    .header-inputs {
+      margin-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      .inputs-role {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        .ant-form-item {
+          margin-bottom: 0 !important;
+          .ant-input {
+            height: 40px;
+            border-radius: 20px;
+          }
+          .ant-select-selector {
+            height: 40px;
+            border-radius: 20px;
+            position: relative;
+            top: -4px;
+          }
+        }
+      }
+    }
+  }
+  &__table {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+}
+.e_columns-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  .action-icon {
+    cursor: pointer;
+  }
+}

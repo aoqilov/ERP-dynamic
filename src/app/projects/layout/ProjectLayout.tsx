@@ -1,25 +1,33 @@
 "use client";
 
-import { Select } from "antd";
+import { Input, Select } from "antd";
 
-import { Input } from "antd";
 // import type { GetProps } from "antd";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectAddModal from "@/components/projects/ProjectAddModal";
 import { useGetProjectsAllQuery } from "@/store/slices/ProjectsApi";
+import { useState } from "react";
+import useDebounce from "@/hooks/useDebounce";
 
 // type SearchProps = GetProps<typeof Input.Search>;
 const ProjectLayout = () => {
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedValue, setSelectedValue] = useState<string | undefined>("");
+  const debouncedSearch = useDebounce(searchInput, 500);
+
   // rtk-query
-  const { data: projects, isLoading, error } = useGetProjectsAllQuery();
+  const {
+    data: projects,
+    isLoading,
+    error,
+  } = useGetProjectsAllQuery({
+    name: debouncedSearch,
+    status: selectedValue,
+  });
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading projects</p>;
 
-  // // for header search and select
-  // const onSearch: SearchProps["onSearch"] = (value) => {
-  //   // console.log(value);
-  // };
   // const handleChange = (value: string) => {
   //   console.log(`selected ${value}`);
   // };
@@ -29,20 +37,26 @@ const ProjectLayout = () => {
       <div className="project__header">
         <div className="header-inputs">
           <Input.Search
-            variant="outlined"
-            placeholder="input search text"
-            // onSearch={onSearch}
+            placeholder="Search project"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             style={{ width: 300 }}
+            allowClear
           />
           <Select
-            placeholder="select"
+            placeholder="Select Status"
             style={{ width: 180 }}
-            // onChange={handleChange}
+            onChange={setSelectedValue}
+            value={selectedValue}
+            allowClear
             options={[
-              { value: "jack", label: "Jack" },
-              { value: "lucy", label: "Lucy" },
-              { value: "Yiminghe", label: "yiminghe" },
-              { value: "disabled", label: "Disabled", disabled: true },
+              { value: "", label: "All" },
+              { value: "not started", label: "Not started" },
+              { value: "inprogress", label: "In progress" },
+              { value: "testing", label: "Testing" },
+              { value: "stoped", label: "Stopped" },
+              { value: "finished", label: "Finished" },
+              { value: "archived", label: "Archived" },
             ]}
           />
         </div>

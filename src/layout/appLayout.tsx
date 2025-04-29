@@ -13,7 +13,7 @@ interface AppLayoutProps {
   children: ReactNode;
 }
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const {
     token: {},
   } = theme.useToken();

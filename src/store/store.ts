@@ -2,7 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { ProjectsApi } from "./slices/ProjectsApi";
 import { AuthApi } from "./slices/AuthApi";
-// import { EmployeesApi } from "../features/api/EmployeesApi";
+import { EmployeesApi } from "../store/slices/EmployesApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -10,13 +10,14 @@ export const store = configureStore({
   reducer: {
     [ProjectsApi.reducerPath]: ProjectsApi.reducer,
     [AuthApi.reducerPath]: AuthApi.reducer,
-    // [EmployeesApi.reducerPath]: EmployeesApi.reducer,
+    [EmployeesApi.reducerPath]: EmployeesApi.reducer,
     // [UsersApi.reducerPath]: UsersApi.reducer,
     // [ToolsApi.reducerPath]: ToolsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(ProjectsApi.middleware)
+      .concat(EmployeesApi.middleware)
       .concat(AuthApi.middleware),
 });
 

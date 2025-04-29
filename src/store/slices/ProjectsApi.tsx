@@ -1,13 +1,16 @@
 import { ProjectResponseType, ProjectType, todoType } from "@/types/Project";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const TOKEN_DYN = process.env.TOKEN;
 
 export const ProjectsApi = createApi({
   reducerPath: "projectApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://test.api.erp.dynamicsoft.uz/api/",
+    baseUrl: API_URL,
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImNlbyIsImlhdCI6MTc0NDYwOTk1NywiZXhwIjoxNzQ0ODY5MTU3fQ.IW_op8GwH8Fbjx8kiQBL_gI62P6cXYfUg0xfNjfxLVA";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImNlbyIsImlhdCI6MTc0NTU3MjkxNCwiZXhwIjoxNzQ1ODMyMTE0fQ.OHxhuHWCUP_8jtcUef6Nvm4ozb0IKqgb_JhJ5-HTzPk";
+
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -28,12 +31,23 @@ export const ProjectsApi = createApi({
       invalidatesTags: [{ type: "Project", id: "LIST" }],
     }),
 
-    // READ (GET ALL)
-    getProjectsAll: builder.query<ProjectType[], void>({
-      query: () => ({
-        url: "project",
-        method: "GET",
-      }),
+    getProjectsAll: builder.query<
+      ProjectType[],
+      { name?: string; status?: string }
+    >({
+      query: ({ name, status }) => {
+        const params: Record<string, string> = {};
+
+        // params objektini faqat mavjud qiymatlar bilan to'ldirish
+        if (name) params.name = name;
+        if (status) params.status = status;
+
+        return {
+          url: "project",
+          method: "GET",
+          params,
+        };
+      },
       providesTags: (result) =>
         Array.isArray(result)
           ? [

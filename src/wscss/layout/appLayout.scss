@@ -104,25 +104,17 @@
     font-size: 22px !important;
     position: relative;
     right: 5px;
-    color: red;
   }
 }
 
-// // yopiq
-//
-//  ant-layout-sider-light
-//   ant-layout-sider-collapsed
-//    sidebar
-//     css-dev-only-do-not-override-1d4w9r2
-
-// // ochiq
-// ant-layout-sider
-//  ant-layout-sider-light
-//   sidebar
-//    css-dev-only-do-not-override-1d4w9r2
 .content {
   margin: 30px;
   height: 100%;
   border-radius: 16px;
-  overflow: hidden;
+
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari uchun scrollni yashirish */
+  }
 }

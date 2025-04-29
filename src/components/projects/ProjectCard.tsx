@@ -16,8 +16,6 @@ const ProjectCard: React.FC<propsProjects> = ({ projects }) => {
   );
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  console.log(projects);
-
   const openEditModal = (id: number) => {
     const edData = projects.find((item) => item.id === id);
     if (edData) {
