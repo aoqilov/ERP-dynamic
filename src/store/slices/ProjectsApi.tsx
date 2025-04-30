@@ -9,7 +9,7 @@ export const ProjectsApi = createApi({
     baseUrl: API_URL,
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImNlbyIsImlhdCI6MTc0NTU3MjkxNCwiZXhwIjoxNzQ1ODMyMTE0fQ.OHxhuHWCUP_8jtcUef6Nvm4ozb0IKqgb_JhJ5-HTzPk";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImNlbyIsImlhdCI6MTc0NTgzMjc1NSwiZXhwIjoxNzQ2MDkxOTU1fQ.0g_FjylT5TsjqbEier3M2AFqfGGrO9ttxInxDo14b5E";
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

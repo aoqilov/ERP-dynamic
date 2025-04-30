@@ -24,7 +24,9 @@ export const EmployeesApi = createApi({
     // get all emmployers
     getEmployesAll: builder.query({
       query: ({ page, page_size, search, job }) => ({
-        url: `employee?page=${page}&page_size=${page_size}&search=${search}&job_title=${job}`,
+        url: `employee?page=${page}&page_size=${page_size}&search=${search}${
+          job ? `&job_title=${job}` : ""
+        }`,
         method: "GET",
       }),
       providesTags: (result) =>

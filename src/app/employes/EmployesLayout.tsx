@@ -50,25 +50,26 @@ const EmployesLayout = () => {
 
     return debounced;
   };
+
   const [queryParams, setQueryParams] = useState<HeaderInput>({
     page: 1,
     page_size: 10,
     search: "",
+    job: "",
   });
+
+  // Formdan o‘zgarishlar
   const handleFormChange = (_: HeaderInput, allValues: HeaderInput) => {
-    const newParams: HeaderInput = { ...queryParams };
-
-    if (allValues.job !== undefined) {
-      newParams.job = allValues.job || "";
-    }
-
-    setQueryParams(newParams);
+    setQueryParams((prev) => ({
+      ...prev,
+      ...allValues,
+    }));
   };
 
-  const debouncedParams = useDebounce(queryParams, 1000); // 3 sekund delay
+  // 1 sekund debounce
+  const debouncedParams = useDebounce(queryParams, 1000);
 
-  // RTK
-  // get
+  // RTK query
   const {
     data: employers,
     isLoading,
@@ -201,9 +202,9 @@ const EmployesLayout = () => {
                 style={{ width: 200 }}
               >
                 <Select placeholder="Select job">
-                  <Option value={0}>All</Option>
-                  <Option value={1}>Backend Developer</Option>
-                  <Option value={2}>CEO</Option>
+                  <Option value={null}>All</Option>
+                  <Option value={1}>CEO</Option>
+                  <Option value={2}>Backend Developer</Option>
                 </Select>
               </Form.Item>
 

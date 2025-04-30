@@ -25,7 +25,7 @@ const sidebarMenu: MenuProps["items"] = [
     key: "sub3",
     icon: <BsTable />,
     label: "Log",
-    children: [{ key: "sub3-1", label: <Link href="/">Projects</Link> }],
+    children: [{ key: "sub3-1", label: <Link href="/log">Projects</Link> }],
   },
   {
     key: "sub4",

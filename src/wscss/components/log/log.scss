@@ -1,0 +1,28 @@
+.log {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 20px 30px;
+  &__header {
+    .header-text {
+      font-size: 32px;
+      font-weight: 600;
+      color: rgb(0, 0, 0);
+    }
+    .header-description {
+      margin-top: 12px;
+      font-size: 20px;
+      font-weight: 400;
+      color: rgba(122, 122, 122);
+    }
+    .form {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+  &__table {
+    margin-bottom: 30px;
+  }
+}

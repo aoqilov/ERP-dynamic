@@ -68,12 +68,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           style={{ overflowY: "auto" }}
         >
           <div className="demo-logo-vertical">
-            <Menu
-              defaultSelectedKeys={["sub1"]}
-              className="sidebar__menu"
-              mode="inline"
-              items={sidebarMenu}
-            />
+            <Menu className="sidebar__menu" mode="inline" items={sidebarMenu} />
             <span className="line"></span>
             <Button
               iconPosition="start"

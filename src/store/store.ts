@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { ProjectsApi } from "./slices/ProjectsApi";
 import { AuthApi } from "./slices/AuthApi";
 import { EmployeesApi } from "../store/slices/EmployesApi";
+import { LogApi } from "./slices/LogApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -11,6 +12,7 @@ export const store = configureStore({
     [ProjectsApi.reducerPath]: ProjectsApi.reducer,
     [AuthApi.reducerPath]: AuthApi.reducer,
     [EmployeesApi.reducerPath]: EmployeesApi.reducer,
+    [LogApi.reducerPath]: LogApi.reducer,
     // [UsersApi.reducerPath]: UsersApi.reducer,
     // [ToolsApi.reducerPath]: ToolsApi.reducer,
   },
@@ -18,7 +20,8 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(ProjectsApi.middleware)
       .concat(EmployeesApi.middleware)
-      .concat(AuthApi.middleware),
+      .concat(AuthApi.middleware)
+      .concat(LogApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
