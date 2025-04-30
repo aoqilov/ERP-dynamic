@@ -44,7 +44,7 @@ const LogLayout = () => {
       page_size: pagination.pageSize || prev.page_size,
     }));
   };
-  const { data, isLoading } = useGetLogAllQuery(debouncedParams);
+  const { data, isFetching } = useGetLogAllQuery(debouncedParams);
   const getColorByStatus = (status: string) => {
     switch (status) {
       case "not started":
@@ -158,7 +158,6 @@ const LogLayout = () => {
       render: (_: LogType, record: LogType) => record.updatedBy.fullname || "",
     },
   ];
-  if (isLoading) return <p>loading</p>;
   return (
     <div className="log">
       <div className="log__header">
@@ -208,6 +207,7 @@ const LogLayout = () => {
             pageSizeOptions: ["10", "20", "50"],
           }}
           onChange={handleTableChange}
+          loading={isFetching}
         />
       </div>
     </div>

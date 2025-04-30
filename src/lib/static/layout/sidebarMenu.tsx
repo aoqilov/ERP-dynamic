@@ -32,16 +32,32 @@ const sidebarMenu: MenuProps["items"] = [
     icon: <IoSettingsOutline />,
     label: "Settings",
     children: [
-      { key: "sub4-1", label: <Link href="/">Job Title</Link> },
-      { key: "sub4-2", label: <Link href="/">Currency</Link> },
-      { key: "sub4-3", label: <Link href="/">Country</Link> },
-      { key: "sub4-4", label: <Link href="/">Project type</Link> },
-      { key: "sub4-5", label: <Link href="/">Integration</Link> },
-      { key: "sub4-6", label: <Link href="/">Canban status</Link> },
-      { key: "sub4-7", label: <Link href="/">Experiance</Link> },
-      { key: "sub4-8", label: <Link href="/">Expense Type</Link> },
-      { key: "sub4-9", label: <Link href="/">Income Type</Link> },
-      { key: "sub4-10", label: <Link href="/">Company wage</Link> },
+      {
+        key: "sub4-1",
+        label: <Link href="/settings/jobtitle">Job Title</Link>,
+      },
+      { key: "sub4-2", label: <Link href="/settings/currency">Currency</Link> },
+      { key: "sub4-3", label: <Link href="/settings/country">Country</Link> },
+      {
+        key: "sub4-4",
+        label: <Link href="/settings/project-type">Project type</Link>,
+      },
+      {
+        key: "sub4-5",
+        label: <Link href="/settings/integration">Integration</Link>,
+      },
+      {
+        key: "sub4-6",
+        label: <Link href="/settings/canban-type">Canban status</Link>,
+      },
+      {
+        key: "sub4-7",
+        label: <Link href="/settings/experience">Experiance</Link>,
+      },
+      {
+        key: "sub4-8",
+        label: <Link href="/settings/expense">Expense Type</Link>,
+      },
     ],
   },
   {

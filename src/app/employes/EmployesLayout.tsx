@@ -70,11 +70,8 @@ const EmployesLayout = () => {
   const debouncedParams = useDebounce(queryParams, 1000);
 
   // RTK query
-  const {
-    data: employers,
-    isLoading,
-    isFetching,
-  } = useGetEmployesAllQuery(debouncedParams);
+  const { data: employers, isFetching } =
+    useGetEmployesAllQuery(debouncedParams);
 
   const [form] = useForm();
 
@@ -99,7 +96,6 @@ const EmployesLayout = () => {
     }
   }, [oneEmployerData]);
 
-  if (isLoading) return <p>loading...</p>;
   const columns = [
     {
       title: "Full name",

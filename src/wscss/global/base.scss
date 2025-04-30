@@ -18,3 +18,9 @@ body {
 .scroll-content::-webkit-scrollbar {
   // display: none; /* Chrome, Safari, Edge */
 }
+.page-loading {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
