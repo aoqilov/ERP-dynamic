@@ -1,7 +1,7 @@
 "use client";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu, Spin, theme } from "antd";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import sidebarMenu from "@/lib/static/layout/sidebarMenu";
@@ -17,6 +17,23 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const {
     token: {},
   } = theme.useToken();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    // sahifa to‘liq yuklanganda isMounted true bo‘ladi
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 500); // istasangiz 100 yoki 0 ham qilsa bo‘ladi
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <Spin size="large" tip="Loading app..." />
+      </div>
+    );
+  }
 
   return (
     <Layout className="layout" style={{ height: "100vh", overflowY: "unset" }}>
