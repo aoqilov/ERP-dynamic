@@ -63,7 +63,7 @@ const ProjectLayout = () => {
         <ProjectAddModal />
       </div>
       <div className="project__cards">
-        <ProjectCard projects={projects?.data} />
+        <ProjectCard projects={projects?.data ?? []} />
       </div>
     </div>
   );

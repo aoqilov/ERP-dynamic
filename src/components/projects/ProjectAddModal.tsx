@@ -39,7 +39,7 @@ const ProjectAddModal: React.FC = () => {
           setIsModalOpen(false); // Close the modal after successful submission
         } catch (err) {
           messageApi.error("Error creating project. Please try again.");
-          console.log(err.message);
+          console.error(err);
         }
       })
       .catch((errorInfo) => {

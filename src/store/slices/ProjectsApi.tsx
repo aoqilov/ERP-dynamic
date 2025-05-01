@@ -1,4 +1,4 @@
-import { ProjectResponseType, ProjectType, todoType } from "@/types/Project";
+import { ProjectAllProp, ProjectResponseType, todoType } from "@/types/Project";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const TOKEN_DYN = process.env.TOKEN;
@@ -32,7 +32,7 @@ export const ProjectsApi = createApi({
     }),
 
     getProjectsAll: builder.query<
-      ProjectType[],
+      ProjectAllProp,
       { name?: string; status?: string }
     >({
       query: ({ name, status }) => {

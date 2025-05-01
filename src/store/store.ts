@@ -4,6 +4,7 @@ import { ProjectsApi } from "./slices/ProjectsApi";
 import { AuthApi } from "./slices/AuthApi";
 import { EmployeesApi } from "../store/slices/EmployesApi";
 import { LogApi } from "./slices/LogApi";
+import { SettingsApi } from "./slices/SettingsApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -13,6 +14,7 @@ export const store = configureStore({
     [AuthApi.reducerPath]: AuthApi.reducer,
     [EmployeesApi.reducerPath]: EmployeesApi.reducer,
     [LogApi.reducerPath]: LogApi.reducer,
+    [SettingsApi.reducerPath]: SettingsApi.reducer,
     // [UsersApi.reducerPath]: UsersApi.reducer,
     // [ToolsApi.reducerPath]: ToolsApi.reducer,
   },
@@ -21,7 +23,8 @@ export const store = configureStore({
       .concat(ProjectsApi.middleware)
       .concat(EmployeesApi.middleware)
       .concat(AuthApi.middleware)
-      .concat(LogApi.middleware),
+      .concat(LogApi.middleware)
+      .concat(SettingsApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

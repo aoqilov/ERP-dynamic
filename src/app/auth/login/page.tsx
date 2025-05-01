@@ -14,7 +14,11 @@ const LoginPage = () => {
 
   const [login, { isLoading }] = useLoginMutation();
 
-  const handleSubmit = async (values: any) => {
+  type loginType = {
+    username: string;
+    password: number;
+  };
+  const handleSubmit = async (values: loginType) => {
     try {
       const res = await login({
         username: values.username,

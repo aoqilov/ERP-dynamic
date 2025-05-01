@@ -13,6 +13,7 @@ export type ProjectType = {
   passed_time?: number;
   created_at?: string;
   updated_at?: string;
+  data: [];
 };
 
 export type ProjectAllProp = {
