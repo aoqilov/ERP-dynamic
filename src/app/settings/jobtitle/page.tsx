@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Button, Switch, Table } from "antd";
+import React, { Key, useEffect, useState } from "react";
+import { Button, notification, Switch, Table } from "antd";
 import { FaPlus, FaRegEdit } from "react-icons/fa";
-import {
-  useGetAllJobTitlesQuery,
-  usePatchJobStatusMutation,
-} from "@/store/slices/SettingsApi";
+
 import { JobTitle } from "@/types/Settings";
 import ModalJobEdit from "@/components/settings/modal/jobtitle/ModalJobEdit";
 import ModalJob from "@/components/settings/modal/jobtitle/ModalJob";
+import {
+  useGetAllJobTitlesQuery,
+  usePatchJobStatusMutation,
+} from "@/store/slices/settingsApi/SttjobApi";
 
 const Jobtitlepage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,8 +24,9 @@ const Jobtitlepage = () => {
   }, [oneEditData]);
 
   const { data: jobData, isLoading } = useGetAllJobTitlesQuery();
-  const [updateStatus] = usePatchJobStatusMutation();
-  console.log(jobData?.data);
+  const [api, contextHolder] = notification.useNotification();
+  const [updateStatus, { isLoading: isLoadStatus }] =
+    usePatchJobStatusMutation();
 
   const columns = [
     {
@@ -38,18 +40,28 @@ const Jobtitlepage = () => {
       dataIndex: "is_active",
       key: "status",
       width: "30%",
-      render: (item: JobTitle, record: JobTitle) => {
-        console.log(item);
-
-        return (
-          <Switch
-            defaultChecked={record.is_active}
-            onChange={(checked) =>
-              updateStatus({ id: record.id, is_active: checked })
-            }
-          />
-        );
-      },
+      filters: [
+        {
+          text: "Active",
+          value: true,
+        },
+        {
+          text: "Not active",
+          value: false,
+        },
+      ],
+      onFilter: (value: boolean | Key, record: JobTitle) =>
+        record.is_active === value,
+      render: (_: boolean, record: JobTitle) => (
+        <Switch
+          loading={isLoadStatus}
+          checked={record.is_active}
+          onChange={async (checked) => {
+            await updateStatus({ id: record.id, is_active: checked });
+            api.success({ message: "Status changed" });
+          }}
+        />
+      ),
     },
     {
       title: <p style={{ textAlign: "center" }}>Action</p>,
@@ -71,6 +83,7 @@ const Jobtitlepage = () => {
 
   return (
     <div>
+      {contextHolder}
       <div className="table">
         <Table
           loading={isLoading}

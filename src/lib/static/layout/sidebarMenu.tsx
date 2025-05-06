@@ -48,7 +48,7 @@ const sidebarMenu: MenuProps["items"] = [
       },
       {
         key: "sub4-6",
-        label: <Link href="/settings/canban-type">Canban status</Link>,
+        label: <Link href="/settings/canbantype">Canban status</Link>,
       },
       {
         key: "sub4-7",
@@ -58,6 +58,14 @@ const sidebarMenu: MenuProps["items"] = [
         key: "sub4-8",
         label: <Link href="/settings/expense">Expense Type</Link>,
       },
+      {
+        key: "sub4-9",
+        label: <Link href="/settings/income">Income Type</Link>,
+      },
+      {
+        key: "sub4-10",
+        label: <Link href="/settings/company-wage">Company wage</Link>,
+      },
     ],
   },
   {
@@ -65,8 +73,11 @@ const sidebarMenu: MenuProps["items"] = [
     icon: <HiOutlinePresentationChartLine />,
     label: "Sales",
     children: [
-      { key: "sub5-1", label: <Link href="/">Calculator</Link> },
-      { key: "sub5-2", label: <Link href="/">Canban</Link> },
+      {
+        key: "sub5-1",
+        label: <Link href="/sales/calculator">Calculator</Link>,
+      },
+      { key: "sub5-2", label: <Link href="/sales/canban">Canban</Link> },
     ],
   },
   {

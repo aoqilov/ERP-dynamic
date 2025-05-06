@@ -1,6 +1,14 @@
-import { usePatchJobDataMutation } from "@/store/slices/SettingsApi";
+import { usePatchJobDataMutation } from "@/store/slices/settingsApi/SttjobApi";
 import { JobTitle } from "@/types/Settings";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  notification,
+  Switch,
+} from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useEffect } from "react";
 
@@ -11,6 +19,7 @@ type Props = {
 };
 const ModalJobEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
   const [updataEditData, { isLoading }] = usePatchJobDataMutation();
+  const [api, contextHolder] = notification.useNotification();
   const [form] = useForm();
   useEffect(() => {
     if (oneData) {
@@ -22,6 +31,7 @@ const ModalJobEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
 
   async function handleSubmit(values: JobTitle) {
     await updataEditData({ id: oneData?.id, body: values });
+    api.success({ message: "Updated successfuly" });
     cancel();
   }
 
@@ -29,6 +39,7 @@ const ModalJobEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
 
   return (
     <div className="modal">
+      {contextHolder}
       <Modal
         title="Edit Job Title"
         open={open}
@@ -37,14 +48,38 @@ const ModalJobEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
         width={"40%"}
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            label="Title"
-            name="name"
-            rules={[{ required: true }]}
-            style={{ width: "300px" }}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
           >
-            <Input placeholder="add job title" />
-          </Form.Item>
+            <Form.Item
+              name="name"
+              label="Currency"
+              rules={[{ required: true }]}
+              style={{ flex: 1 }}
+            >
+              <Input placeholder="Currency" />
+            </Form.Item>
+            <Form.Item
+              name="rate"
+              label="Current Rate"
+              rules={[{ required: true }]}
+              style={{ flex: 1 }}
+            >
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder="add current rate.."
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                }
+                // parser={(value) => value?.replace(/\s*/g, "")}
+              />
+            </Form.Item>
+          </div>
           <Form.Item label="Status" name="is_active">
             <Switch />
           </Form.Item>

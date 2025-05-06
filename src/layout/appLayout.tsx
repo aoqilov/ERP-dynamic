@@ -1,12 +1,14 @@
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Layout, Menu, Spin, theme } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+
+import { Button, Flex, Layout, Menu, Spin, theme } from "antd";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import sidebarMenu from "@/lib/static/layout/sidebarMenu";
 import Image from "next/image";
-import { MdLogout } from "react-icons/md";
+// import { MdLogout } from "react-icons/md";
 
 const { Sider, Content } = Layout;
 interface AppLayoutProps {
@@ -29,8 +31,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   if (!isMounted) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
-        <Spin size="large" tip="Loading app..." />
+      <div className="page-loading">
+        <Flex align="center" gap="middle">
+          <Spin indicator={<LoadingOutlined spin style={{ fontSize: 48 }} />} />
+        </Flex>
       </div>
     );
   }
@@ -86,8 +90,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         >
           <div className="demo-logo-vertical">
             <Menu className="sidebar__menu" mode="inline" items={sidebarMenu} />
-            <span className="line"></span>
-            <Button
+            {/* <Button
               iconPosition="start"
               icon={<MdLogout size={24} />}
               type="text"
@@ -95,7 +98,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               className="logout"
             >
               Logout
-            </Button>
+            </Button> */}
           </div>
         </Sider>
         <Provider store={store}>

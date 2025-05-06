@@ -4,7 +4,16 @@ import { ProjectsApi } from "./slices/ProjectsApi";
 import { AuthApi } from "./slices/AuthApi";
 import { EmployeesApi } from "../store/slices/EmployesApi";
 import { LogApi } from "./slices/LogApi";
-import { SettingsApi } from "./slices/SettingsApi";
+import { SttjobApi } from "./slices/settingsApi/SttjobApi";
+import { SttCurrencyApi } from "./slices/settingsApi/SttCurrencyApi";
+import { SttRegionApi } from "./slices/settingsApi/SttRegionApi";
+import { SttPtApi } from "./slices/settingsApi/SttPtApi";
+import { SttIntegrationApi } from "./slices/settingsApi/SttIntegrationApi";
+import { SttExperienceApi } from "./slices/settingsApi/SttExperienceApi";
+import { SttExpenceApi } from "./slices/settingsApi/SttExpenceApi";
+import { SttIncomeApi } from "./slices/settingsApi/SttIncome";
+import { SttMarginApi } from "./slices/settingsApi/SttMarginApi";
+import { SttCanbanApi } from "./slices/settingsApi/SttCanbanApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -14,9 +23,17 @@ export const store = configureStore({
     [AuthApi.reducerPath]: AuthApi.reducer,
     [EmployeesApi.reducerPath]: EmployeesApi.reducer,
     [LogApi.reducerPath]: LogApi.reducer,
-    [SettingsApi.reducerPath]: SettingsApi.reducer,
-    // [UsersApi.reducerPath]: UsersApi.reducer,
-    // [ToolsApi.reducerPath]: ToolsApi.reducer,
+    // settings
+    [SttjobApi.reducerPath]: SttjobApi.reducer,
+    [SttCurrencyApi.reducerPath]: SttCurrencyApi.reducer,
+    [SttRegionApi.reducerPath]: SttRegionApi.reducer,
+    [SttPtApi.reducerPath]: SttPtApi.reducer,
+    [SttIntegrationApi.reducerPath]: SttIntegrationApi.reducer,
+    [SttExperienceApi.reducerPath]: SttExperienceApi.reducer,
+    [SttExpenceApi.reducerPath]: SttExpenceApi.reducer,
+    [SttIncomeApi.reducerPath]: SttIncomeApi.reducer,
+    [SttMarginApi.reducerPath]: SttMarginApi.reducer,
+    [SttCanbanApi.reducerPath]: SttCanbanApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,7 +41,17 @@ export const store = configureStore({
       .concat(EmployeesApi.middleware)
       .concat(AuthApi.middleware)
       .concat(LogApi.middleware)
-      .concat(SettingsApi.middleware),
+      // settings
+      .concat(SttjobApi.middleware)
+      .concat(SttCurrencyApi.middleware)
+      .concat(SttPtApi.middleware)
+      .concat(SttIntegrationApi.middleware)
+      .concat(SttExperienceApi.middleware)
+      .concat(SttExpenceApi.middleware)
+      .concat(SttIncomeApi.middleware)
+      .concat(SttMarginApi.middleware)
+      .concat(SttCanbanApi.middleware)
+      .concat(SttRegionApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
