@@ -14,6 +14,8 @@ import { SttExpenceApi } from "./slices/settingsApi/SttExpenceApi";
 import { SttIncomeApi } from "./slices/settingsApi/SttIncome";
 import { SttMarginApi } from "./slices/settingsApi/SttMarginApi";
 import { SttCanbanApi } from "./slices/settingsApi/SttCanbanApi";
+import { SlCanbanApi } from "./slices/SalesApi/SlCanbanApi";
+import { FinanceExpenseApi } from "./slices/finance/FinanceExpenseApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -34,6 +36,9 @@ export const store = configureStore({
     [SttIncomeApi.reducerPath]: SttIncomeApi.reducer,
     [SttMarginApi.reducerPath]: SttMarginApi.reducer,
     [SttCanbanApi.reducerPath]: SttCanbanApi.reducer,
+    // SALES
+    [SlCanbanApi.reducerPath]: SlCanbanApi.reducer,
+    [FinanceExpenseApi.reducerPath]: FinanceExpenseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -51,7 +56,11 @@ export const store = configureStore({
       .concat(SttIncomeApi.middleware)
       .concat(SttMarginApi.middleware)
       .concat(SttCanbanApi.middleware)
-      .concat(SttRegionApi.middleware),
+      .concat(SttRegionApi.middleware)
+      // saless
+      .concat(SlCanbanApi.middleware)
+      // finance
+      .concat(FinanceExpenseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

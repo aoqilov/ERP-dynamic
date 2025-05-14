@@ -8,8 +8,7 @@ export const SttCurrencyApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
     prepareHeaders: (headers) => {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImNlbyIsImlhdCI6MTc0NjM1NTA5MywiZXhwIjoxNzQ2NjE0MjkzfQ.buU1yxCgSJfjPZw_cEjDmkDDbFDt4Iu5IRSek-EjqnY";
+      const token = process.env.NEXT_PUBLIC_TOKEN;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -32,6 +31,9 @@ export const SttCurrencyApi = createApi({
             ]
           : [{ type: "currency", id: "LIST" }], // Default tag if no data
     }),
+    getActiveCurrency: builder.query<responseCurrency, void>({
+      query: () => "setting/currency?is_active=true",
+    }),
     patchCurrencyStatus: builder.mutation({
       query: ({
         id,
@@ -45,8 +47,8 @@ export const SttCurrencyApi = createApi({
         body: { is_active },
       }),
       invalidatesTags: (result, error, { id }) => [
-        { type: "currency", id }, // Invalidate the specific job title
-        { type: "currency", id: "LIST" }, // Invalidate the whole list
+        { type: "currency", id },
+        { type: "currency", id: "LIST" },
       ],
     }),
     createCurrencyTitle: builder.mutation<responseCurrency, CurrencyType>({
@@ -84,4 +86,5 @@ export const {
   usePatchCurrencyStatusMutation,
   useCreateCurrencyTitleMutation,
   usePatchCurrencyDataMutation,
+  useGetActiveCurrencyQuery,
 } = SttCurrencyApi;

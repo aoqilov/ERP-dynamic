@@ -15,7 +15,6 @@ const ModalIntegration: React.FC<Props> = ({ cancel, open }) => {
   const [form] = useForm();
 
   const handleSubmit = async (values: CurrencyType) => {
-    console.log(values);
     await crateJobMut({ ...values, surcharge: +values.surcharge }); // serverga jo‘natish
     api.success({ message: "Created succesfully!" });
     cancel();

@@ -56,8 +56,6 @@ const ProjectOnePage = () => {
   useEffect(() => {
     // for form
     if (project?.data) {
-      console.log(form);
-
       form.setFieldsValue({
         client_name: project.data.client_name,
         client_phone_number: project.data.client_phone_number,
@@ -98,7 +96,6 @@ const ProjectOnePage = () => {
         todoname: someTodo?.name,
       });
       setTodoId(someTodo.id);
-      console.log(someTodo);
     }
   }
   async function editPatching() {

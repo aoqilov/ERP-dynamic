@@ -25,7 +25,6 @@ type Props = {
 
 const ModalUpdate: React.FC<Props> = ({ open, onCancel, oneEmploye }) => {
   const [updateEmploye, { isLoading }] = useUpdateEmployeMutation();
-  console.log(oneEmploye);
 
   //  notification
   const [api, contextHolder] = notification.useNotification();

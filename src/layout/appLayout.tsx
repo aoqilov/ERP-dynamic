@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+
 import React, { ReactNode, useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -8,6 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import sidebarMenu from "@/lib/static/layout/sidebarMenu";
 import Image from "next/image";
+
 // import { MdLogout } from "react-icons/md";
 
 const { Sider, Content } = Layout;
@@ -15,6 +18,8 @@ interface AppLayoutProps {
   children: ReactNode;
 }
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+  const pathname = usePathname();
+
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: {},
@@ -38,6 +43,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </div>
     );
   }
+
+  // openKeys uchun birinchi segmentni olamiz (masalan: /settings/jobtitle => settings)
+  const rootKey = pathname.split("/")[1];
+  const openKeys = rootKey ? [rootKey] : [];
 
   return (
     <Layout className="layout" style={{ height: "100vh", overflowY: "unset" }}>
@@ -89,7 +98,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           style={{ overflowY: "auto" }}
         >
           <div className="demo-logo-vertical">
-            <Menu className="sidebar__menu" mode="inline" items={sidebarMenu} />
+            <Menu
+              className="sidebar__menu"
+              mode="inline"
+              items={sidebarMenu}
+              selectedKeys={[pathname]} // aktiv link
+              defaultOpenKeys={openKeys} // submenu ochiq bo‘ladi
+            />
             {/* <Button
               iconPosition="start"
               icon={<MdLogout size={24} />}

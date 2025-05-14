@@ -28,9 +28,7 @@ const ProjectLayout = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading projects</p>;
 
-  // const handleChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
+  console.log(projects);
 
   return (
     <div className="project">

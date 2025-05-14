@@ -35,8 +35,6 @@ const ModalJobEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
     cancel();
   }
 
-  console.log(oneData);
-
   return (
     <div className="modal">
       {contextHolder}

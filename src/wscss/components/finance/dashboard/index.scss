@@ -1,0 +1,72 @@
+.dashboard {
+  .dashboard__titlebox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    .info-title {
+      font-size: 32px;
+      font-weight: 500;
+    }
+    .info-desc {
+      font-size: 20px;
+      font-weight: 400;
+      color: rgb(122, 122, 122);
+    }
+  }
+  background-color: white;
+  padding: 20px 30px;
+  margin-bottom: 50px;
+  &__total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  &__convert2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  &__second {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  &__chart {
+    margin-top: 50px;
+  }
+  .total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__content {
+      display: flex;
+      align-items: center;
+      .content-info {
+        list-style: none;
+      }
+    }
+  }
+  .income {
+    margin-bottom: 50px;
+    .income__titlebox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      .info-title {
+        font-size: 32px;
+        font-weight: 500;
+      }
+      .info-desc {
+        font-size: 20px;
+        font-weight: 400;
+        color: rgb(122, 122, 122);
+      }
+    }
+  }
+}

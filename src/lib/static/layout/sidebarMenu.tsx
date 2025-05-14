@@ -10,91 +10,207 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { BsClipboardData } from "react-icons/bs";
 import { FaTasks } from "react-icons/fa";
 
+// const sidebarMenu: MenuProps["items"] = [
+//   {
+//     key: "sub1",
+//     icon: <HiClipboardDocumentList width={24} />,
+//     label: <Link href="/projects">Projects</Link>,
+//   },
+//   {
+//     key: "sub2",
+//     icon: <HiOutlineUsers />,
+//     label: <Link href="/employes">Employees</Link>,
+//   },
+//   {
+//     key: "sub3",
+//     icon: <BsTable />,
+//     label: "Log",
+//     children: [{ key: "sub3-1", label: <Link href="/log">Projects</Link> }],
+//   },
+//   {
+//     key: "sub4",
+//     icon: <IoSettingsOutline />,
+//     label: "Settings",
+//     children: [
+//       {
+//         key: "sub4-1",
+//         label: <Link href="/settings/jobtitle">Job Title</Link>,
+//       },
+//       { key: "sub4-2", label: <Link href="/settings/currency">Currency</Link> },
+//       { key: "sub4-3", label: <Link href="/settings/country">Country</Link> },
+//       {
+//         key: "sub4-4",
+//         label: <Link href="/settings/project-type">Project type</Link>,
+//       },
+//       {
+//         key: "sub4-5",
+//         label: <Link href="/settings/integration">Integration</Link>,
+//       },
+//       {
+//         key: "sub4-6",
+//         label: <Link href="/settings/canbantype">Canban status</Link>,
+//       },
+//       {
+//         key: "sub4-7",
+//         label: <Link href="/settings/experience">Experiance</Link>,
+//       },
+//       {
+//         key: "sub4-8",
+//         label: <Link href="/settings/expense">Expense Type</Link>,
+//       },
+//       {
+//         key: "sub4-9",
+//         label: <Link href="/settings/income">Income Type</Link>,
+//       },
+//       {
+//         key: "sub4-10",
+//         label: <Link href="/settings/company-wage">Company wage</Link>,
+//       },
+//     ],
+//   },
+//   {
+//     key: "sub5",
+//     icon: <HiOutlinePresentationChartLine />,
+//     label: "Sales",
+//     children: [
+//       {
+//         key: "sub5-1",
+//         label: <Link href="/sales/calculator">Calculator</Link>,
+//       },
+//       { key: "sub5-2", label: <Link href="/sales/canban">Canban</Link> },
+//     ],
+//   },
+//   {
+//     key: "sub6",
+//     icon: <BsClipboardData />,
+//     label: "Finance",
+//     children: [
+//       {
+//         key: "sub6-1",
+//         label: <Link href="/finance/dashboard">Dashboard</Link>,
+//       },
+//       { key: "sub6-2", label: <Link href="/finance/expense">Expenses</Link> },
+//       { key: "sub6-3", label: <Link href="/finance/income">Income</Link> },
+//       { key: "sub6-4", label: <Link href="/finance/support">Support</Link> },
+//     ],
+//   },
+//   {
+//     key: "sub7",
+//     icon: <FaTasks />,
+//     label: "Task playground",
+//   },
+// ];
 const sidebarMenu: MenuProps["items"] = [
   {
-    key: "sub1",
+    key: "/projects",
     icon: <HiClipboardDocumentList width={24} />,
     label: <Link href="/projects">Projects</Link>,
   },
   {
-    key: "sub2",
+    key: "/employes",
     icon: <HiOutlineUsers />,
     label: <Link href="/employes">Employees</Link>,
   },
   {
-    key: "sub3",
+    key: "log",
     icon: <BsTable />,
     label: "Log",
-    children: [{ key: "sub3-1", label: <Link href="/log">Projects</Link> }],
+    children: [
+      {
+        key: "/log",
+        label: <Link href="/log">Projects</Link>,
+      },
+    ],
   },
   {
-    key: "sub4",
+    key: "settings",
     icon: <IoSettingsOutline />,
     label: "Settings",
     children: [
       {
-        key: "sub4-1",
+        key: "/settings/jobtitle",
         label: <Link href="/settings/jobtitle">Job Title</Link>,
       },
-      { key: "sub4-2", label: <Link href="/settings/currency">Currency</Link> },
-      { key: "sub4-3", label: <Link href="/settings/country">Country</Link> },
       {
-        key: "sub4-4",
+        key: "/settings/currency",
+        label: <Link href="/settings/currency">Currency</Link>,
+      },
+      {
+        key: "/settings/country",
+        label: <Link href="/settings/country">Country</Link>,
+      },
+      {
+        key: "/settings/project-type",
         label: <Link href="/settings/project-type">Project type</Link>,
       },
       {
-        key: "sub4-5",
+        key: "/settings/integration",
         label: <Link href="/settings/integration">Integration</Link>,
       },
       {
-        key: "sub4-6",
+        key: "/settings/canbantype",
         label: <Link href="/settings/canbantype">Canban status</Link>,
       },
       {
-        key: "sub4-7",
-        label: <Link href="/settings/experience">Experiance</Link>,
+        key: "/settings/experience",
+        label: <Link href="/settings/experience">Experience</Link>,
       },
       {
-        key: "sub4-8",
+        key: "/settings/expense",
         label: <Link href="/settings/expense">Expense Type</Link>,
       },
       {
-        key: "sub4-9",
+        key: "/settings/income",
         label: <Link href="/settings/income">Income Type</Link>,
       },
       {
-        key: "sub4-10",
+        key: "/settings/company-wage",
         label: <Link href="/settings/company-wage">Company wage</Link>,
       },
     ],
   },
   {
-    key: "sub5",
+    key: "sales",
     icon: <HiOutlinePresentationChartLine />,
     label: "Sales",
     children: [
       {
-        key: "sub5-1",
+        key: "/sales/calculator",
         label: <Link href="/sales/calculator">Calculator</Link>,
       },
-      { key: "sub5-2", label: <Link href="/sales/canban">Canban</Link> },
+      {
+        key: "/sales/canban",
+        label: <Link href="/sales/canban">Canban</Link>,
+      },
     ],
   },
   {
-    key: "sub6",
+    key: "finance",
     icon: <BsClipboardData />,
     label: "Finance",
     children: [
-      { key: "sub6-1", label: <Link href="/">Dashboard</Link> },
-      { key: "sub6-2", label: <Link href="/">Expenses</Link> },
-      { key: "sub6-3", label: <Link href="/">Income</Link> },
-      { key: "sub6-4", label: <Link href="/">Support</Link> },
+      {
+        key: "/finance/dashboard",
+        label: <Link href="/finance/dashboard">Dashboard</Link>,
+      },
+      {
+        key: "/finance/expense",
+        label: <Link href="/finance/expense">Expenses</Link>,
+      },
+      {
+        key: "/finance/income",
+        label: <Link href="/finance/income">Income</Link>,
+      },
+      {
+        key: "/finance/support",
+        label: <Link href="/finance/support">Support</Link>,
+      },
     ],
   },
   {
-    key: "sub7",
+    key: "/task-playground",
     icon: <FaTasks />,
-    label: "Task playground",
+    label: <Link href="/task-playground">Task playground</Link>,
   },
 ];
 

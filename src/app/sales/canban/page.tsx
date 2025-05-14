@@ -2,9 +2,18 @@
 import ReactApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { DatePicker } from "antd";
+import CanbanTodo from "./CanbanTodo";
+import { useGetCanbanBoardQuery } from "@/store/slices/SalesApi/SlCanbanApi";
 
 const { RangePicker } = DatePicker;
 const CanbanPage = () => {
+  const { data: canbanData, isLoading } = useGetCanbanBoardQuery();
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!canbanData?.data) return <p>No data</p>;
+
+  console.log(canbanData); // ✅ Tip xatoliksiz
+
   const chartOptions: ApexOptions = {
     chart: {
       type: "bar",
@@ -91,7 +100,9 @@ const CanbanPage = () => {
           height={350}
         />
       </div>
-      <div className="canban__todo">todo</div>
+      <div className="canban__box">
+        <CanbanTodo />
+      </div>
     </div>
   );
 };
