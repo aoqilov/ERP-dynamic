@@ -103,8 +103,7 @@ const ProjectOnePage = () => {
       const values = await form.validateFields(["todoname"]); // bu avtomatik error message ko‘rsatadi
       const todoname = values.todoname;
 
-      const response = await update({ id: todoId, name: todoname }).unwrap();
-      console.log("Muvaffaqiyatli yangilandi:", response);
+      await update({ id: todoId, name: todoname }).unwrap();
       messageApi.success("Success changed");
       form.resetFields();
       setTodoId(0);

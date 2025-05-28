@@ -28,8 +28,6 @@ const ProjectLayout = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading projects</p>;
 
-  console.log(projects);
-
   return (
     <div className="project">
       <div className="project__header">

@@ -1,34 +1,18 @@
 "use client";
 
+import { IncomeData } from "@/types/finance/chart";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-type MonthlyData = {
-  month: string;
-  total: number;
-};
-
-const chartData: MonthlyData[] = [
-  { month: "2024-06", total: 0 },
-  { month: "2024-07", total: 0 },
-  { month: "2024-08", total: 0 },
-  { month: "2024-09", total: 16884000 },
-  { month: "2024-10", total: 13410180000 },
-  { month: "2024-11", total: 0 },
-  { month: "2024-12", total: 0 },
-  { month: "2025-01", total: 197200000 },
-  { month: "2025-02", total: 2790887400 },
-  { month: "2025-03", total: 0 },
-  { month: "2025-04", total: 0 },
-  { month: "2025-05", total: 1260000 },
-];
-
 type monthChart = {
   linecolor: string;
+  chartData: IncomeData[] | undefined;
 };
-const MonthlyChart: React.FC<monthChart> = ({ linecolor }) => {
+const MonthlyChart: React.FC<monthChart> = ({ linecolor, chartData }) => {
+  if (!chartData || !Array.isArray(chartData)) return null;
+
   const options: ApexOptions = {
     chart: {
       id: "monthly-chart",

@@ -16,6 +16,10 @@ import { SttMarginApi } from "./slices/settingsApi/SttMarginApi";
 import { SttCanbanApi } from "./slices/settingsApi/SttCanbanApi";
 import { SlCanbanApi } from "./slices/SalesApi/SlCanbanApi";
 import { FinanceExpenseApi } from "./slices/finance/FinanceExpenseApi";
+import { FinanceIncomeApi } from "./slices/finance/FinanceIncomeApi";
+import { FinanceSupportApi } from "./slices/finance/FinanceSupportApi";
+import { ChartApi } from "./slices/finance/ChartApi";
+import { SlCalculatorApi } from "./slices/SalesApi/SlCalculator";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -38,7 +42,13 @@ export const store = configureStore({
     [SttCanbanApi.reducerPath]: SttCanbanApi.reducer,
     // SALES
     [SlCanbanApi.reducerPath]: SlCanbanApi.reducer,
+    [SlCalculatorApi.reducerPath]: SlCalculatorApi.reducer,
+    // finance
+
     [FinanceExpenseApi.reducerPath]: FinanceExpenseApi.reducer,
+    [FinanceIncomeApi.reducerPath]: FinanceIncomeApi.reducer,
+    [FinanceSupportApi.reducerPath]: FinanceSupportApi.reducer,
+    [ChartApi.reducerPath]: ChartApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -59,8 +69,12 @@ export const store = configureStore({
       .concat(SttRegionApi.middleware)
       // saless
       .concat(SlCanbanApi.middleware)
+      .concat(SlCalculatorApi.middleware)
       // finance
-      .concat(FinanceExpenseApi.middleware),
+      .concat(FinanceIncomeApi.middleware)
+      .concat(FinanceExpenseApi.middleware)
+      .concat(FinanceSupportApi.middleware)
+      .concat(ChartApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

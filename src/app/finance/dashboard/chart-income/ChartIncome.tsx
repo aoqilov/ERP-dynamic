@@ -1,12 +1,18 @@
 import { Select } from "antd";
 import React from "react";
 import MonthlyChart from "./MonthlyChart";
+import { IncomeData } from "@/types/finance/chart";
 
 type ChartIncomeProps = {
   title: string;
   linecolor: string;
+  chartData: IncomeData[] | undefined;
 };
-const ChartIncome: React.FC<ChartIncomeProps> = ({ title, linecolor }) => {
+const ChartIncome: React.FC<ChartIncomeProps> = ({
+  title,
+  linecolor,
+  chartData,
+}) => {
   return (
     <div className="income">
       <div className="income__titlebox">
@@ -38,7 +44,7 @@ const ChartIncome: React.FC<ChartIncomeProps> = ({ title, linecolor }) => {
         </div>
       </div>
       <div className="income__chart">
-        <MonthlyChart linecolor={linecolor} />
+        <MonthlyChart linecolor={linecolor} chartData={chartData} />
       </div>
     </div>
   );

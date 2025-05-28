@@ -5,35 +5,40 @@ import React from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { GoKey } from "react-icons/go";
 import { useLoginMutation } from "@/store/slices/AuthApi";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 const LoginPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [form] = Form.useForm(); // Form holatini ushlab turish
-  const router = useRouter(); // Router hooki
+  const [form] = Form.useForm();
+  const router = useRouter();
 
   const [login, { isLoading }] = useLoginMutation();
 
   type loginType = {
     username: string;
-    password: number;
+    password: string;
   };
+
   const handleSubmit = async (values: loginType) => {
     try {
       const res = await login({
         username: values.username,
         password: values.password,
       }).unwrap();
+      if (!isLoading) {
+        localStorage.setItem("token", JSON.stringify(res?.data.token));
+        localStorage.setItem("userData", JSON.stringify(res?.data));
+        //
+        const dateOnly = dayjs().add(7, "day").format("YYYY-MM-DD,HH:mm");
+        localStorage.setItem("token_expiration", JSON.stringify(dateOnly));
+
+        messageApi.success("LOGIN SUCCESS");
+        router.push("/projects"); //
+      }
       console.log(res);
-
-      // Agar login muvaffaqiyatli bo'lsa
-      messageApi.success("LOGIN SUCCESS");
-
-      // '/projects' sahifasiga yo'naltirish
-      router.push("/projects"); // bu yerda router.push yordamida sahifaga o'tish amalga oshiriladi
     } catch (err) {
       console.log(err);
-
       messageApi.error("LOGIN ERROR");
     }
   };
@@ -58,13 +63,14 @@ const LoginPage = () => {
           className="logo-line"
         />
       </div>
+
       <div className="login__form">
         <h4 className="form-header">Log In to Your Account</h4>
         <Form
           form={form}
           layout="vertical"
           className="form-box"
-          onFinish={handleSubmit} // Formni yuborishdan oldin validatsiya qiladi
+          onFinish={handleSubmit}
         >
           <Form.Item
             label="Username"

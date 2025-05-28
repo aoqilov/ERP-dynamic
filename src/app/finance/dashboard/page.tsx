@@ -1,10 +1,19 @@
+"use client";
 import { Button } from "antd";
 import React from "react";
 import { TbReplace } from "react-icons/tb";
 import ChartTotal from "./chart-total/ChartTotal";
 import ChartIncome from "./chart-income/ChartIncome";
+import {
+  useGetChartExpenseQuery,
+  useGetChartIncomeQuery,
+} from "@/store/slices/finance/ChartApi";
 
 const DashboardPage = () => {
+  const { data: incomeChartData } = useGetChartIncomeQuery();
+  const { data: expenseChartData } = useGetChartExpenseQuery();
+  //
+
   return (
     <div className="dashboard">
       <div className="dashboard__titlebox">
@@ -24,19 +33,20 @@ const DashboardPage = () => {
         <ChartTotal />
         <ChartTotal />
       </div>
-      <div className="dashboard__convert2">
-        <ChartTotal />
-        <ChartTotal />
-      </div>
-      <div className="dashboard__second">
-        <ChartTotal />
-        <ChartTotal />
-      </div>
+
       <div className="dashboard__income">
-        <ChartIncome title="Income" linecolor="#0070f3" />
+        <ChartIncome
+          title="Income"
+          linecolor="#0070f3"
+          chartData={incomeChartData?.data}
+        />
       </div>
       <div className="dashboard__expense">
-        <ChartIncome title="Expense" linecolor="#ED4D5D" />
+        <ChartIncome
+          title="Expense"
+          linecolor="#ED4D5D"
+          chartData={expenseChartData?.data}
+        />
       </div>
     </div>
   );

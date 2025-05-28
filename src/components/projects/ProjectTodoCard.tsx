@@ -52,7 +52,6 @@ const ProjectTodoCard: React.FC<propsTodoCard> = ({ idTodo, editTodo }) => {
     }
   };
 
-  console.log(todos?.data);
   if (isLoading) {
     return <p>todoo loading</p>;
   }

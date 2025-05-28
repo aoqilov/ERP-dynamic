@@ -1,0 +1,32 @@
+.income {
+  background-color: white;
+  height: 100%;
+  width: 100%;
+  padding: 20px 30px;
+
+  &__title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    .info-tit {
+      font-size: 32px;
+      font-weight: 500;
+    }
+    .info-desc {
+      font-size: 20px;
+      font-weight: 400;
+      color: rgb(122, 122, 122);
+    }
+    .title-btns {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+
+  &__table {
+    margin-bottom: 50px;
+  }
+}

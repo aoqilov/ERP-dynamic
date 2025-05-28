@@ -2,20 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Popconfirm, Table, Tooltip } from "antd";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import {
-  useDeleteFinanceExpenseMutation,
-  useGetFinanceExpenceQuery,
-} from "@/store/slices/finance/FinanceExpenseApi";
 import dayjs from "dayjs";
-import { Expense, ExpenseQueryParams } from "@/types/finance/expense";
 import { IoIosArrowDown } from "react-icons/io";
-import ExpenseCreate from "@/components/finance/expense/ExpenseCreate";
+import {
+  useDeleteFinanceIncomeMutation,
+  useGetFinanceIncomeQuery,
+} from "@/store/slices/finance/FinanceIncomeApi";
+import { Income, IncomeQueryParams } from "@/types/finance/income";
+import IncomeCreate from "@/components/finance/income/IncomeCreate";
 
-const TableExpense = () => {
+const TableIncome = () => {
   const { RangePicker } = DatePicker;
 
   const [createOpen, SetIsCreateOpen] = useState(false);
-  const [editData, SetEditData] = useState<Expense | null>(null);
+  const [editData, SetEditData] = useState<Income | null>(null);
   useEffect(() => {
     if (editData) {
       SetIsCreateOpen(true);
@@ -24,7 +24,7 @@ const TableExpense = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
-  const params: ExpenseQueryParams | Omit<ExpenseQueryParams, "from" | "to"> = {
+  const params: IncomeQueryParams | Omit<IncomeQueryParams, "from" | "to"> = {
     page: currentPage,
     page_size: pageSize,
     ...(range && {
@@ -32,10 +32,10 @@ const TableExpense = () => {
       to: range[1].valueOf(),
     }),
   };
-  const { data, isFetching } = useGetFinanceExpenceQuery(params);
-  const [deleteMutation, { isLoading }] = useDeleteFinanceExpenseMutation();
+  const { data, isFetching } = useGetFinanceIncomeQuery(params);
+  const [deleteMutation, { isLoading }] = useDeleteFinanceIncomeMutation();
 
-  const columns = [
+  const columnsIncome = [
     {
       title: "Expense name",
       dataIndex: "project_name",
@@ -45,9 +45,9 @@ const TableExpense = () => {
     {
       title: "Type",
       key: "type",
-      render: (expenseTypes: Expense) => (
+      render: (incomeType: Income) => (
         <>
-          {expenseTypes.expense_types.map((item) => (
+          {incomeType.income_types.map((item) => (
             <div key={item.id}>{item.name}</div>
           ))}
         </>
@@ -57,6 +57,17 @@ const TableExpense = () => {
       title: "Current rate",
       dataIndex: "current_rate",
       key: "currentRate",
+    },
+    {
+      title: "Sales agent",
+      dataIndex: "fullname",
+      key: "sagent",
+      width: "12%",
+      render: (item: number, render: Income) => (
+        <React.Fragment key={render.id}>
+          <p>{render.sales_agent.fullname}</p>
+        </React.Fragment>
+      ),
     },
     {
       title: "Date",
@@ -108,12 +119,17 @@ const TableExpense = () => {
       title: "Cost",
       dataIndex: "cost",
       key: "cost",
+      render: (item: number, render: Income) => (
+        <p>
+          {render.cost.toLocaleString()} {render.currency}
+        </p>
+      ),
     },
     {
       title: "Action",
       key: "edit",
       width: "9%",
-      render: (item: Expense) => (
+      render: (item: Income) => (
         <div
           style={{
             display: "flex",
@@ -136,14 +152,14 @@ const TableExpense = () => {
             </div>
           </Popconfirm>
         </div>
-      ), // Bu yerga button yoki ikoncha qo‘shishingiz mumkin
+      ),
     },
   ];
   return (
-    <div className="expense">
-      <div className="expense__title">
+    <div className="income">
+      <div className="income__title">
         <div className="title-info">
-          <h5 className="info-tit">Expenses</h5>
+          <h5 className="info-tit">Income</h5>
           <p className="info-desc">Here you may track financial information</p>
         </div>
         <div className="title-btns">
@@ -162,10 +178,10 @@ const TableExpense = () => {
           </Button>
         </div>
       </div>
-      <div className="expense__table">
+      <div className="income__table">
         <Table
           rowKey={"id"}
-          columns={columns}
+          columns={columnsIncome}
           loading={isFetching}
           dataSource={data?.data}
           footer={() =>
@@ -181,21 +197,22 @@ const TableExpense = () => {
                     width: 150,
                   }}
                 >
-                  {data.per_currency[0].currency}:
-                  {data.per_currency[0].total_cost}
+                  {data.per_currency.map((item) => (
+                    <p key={item.currency}>
+                      {item.currency + ": " + item.total_cost}
+                    </p>
+                  ))}
                 </div>
               </div>
             ) : null
           }
           pagination={{
             position: ["bottomRight"],
-            // ikkala tomonda
-
             current: currentPage,
             pageSize: pageSize,
-            showSizeChanger: true, // bu "10 / page" dropdownni chiqaradi
-            pageSizeOptions: ["2", "4", "6"], // allowed page sizes
-            total: data?.total_elements, // umumiy sahifalar soni
+            showSizeChanger: true,
+            pageSizeOptions: ["2", "4", "6"],
+            total: data?.total_elements,
             onChange: (page, size) => {
               setCurrentPage(page);
               setPageSize(size);
@@ -203,7 +220,7 @@ const TableExpense = () => {
           }}
         />
       </div>
-      <ExpenseCreate
+      <IncomeCreate
         createOpen={createOpen}
         createCloes={() => SetIsCreateOpen(false)}
         editData={editData}
@@ -212,4 +229,4 @@ const TableExpense = () => {
   );
 };
 
-export default TableExpense;
+export default TableIncome;

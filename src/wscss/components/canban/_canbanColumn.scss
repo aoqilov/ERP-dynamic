@@ -1,5 +1,5 @@
 .column {
-  width: 240px;
+  width: 300px !important;
   &__title {
     display: flex;
     align-items: center;
@@ -20,6 +20,7 @@
   font-family: sans-serif;
   background-color: #fff;
   padding: 0 9px;
+  width: 240px;
 
   &__icons {
     display: flex;

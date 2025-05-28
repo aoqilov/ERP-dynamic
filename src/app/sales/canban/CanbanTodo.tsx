@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -10,91 +10,103 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Column from "./columnCanban"; // Bu yerda columnCanban komponenti bo‘lad
-import { canbanData } from "./canbanData";
+import { useGetCanbanBoardQuery } from "@/store/slices/SalesApi/SlCanbanApi";
+import ColumnCanban from "./columnCanban";
+import { ColumnData, TaskType } from "@/types/SalesCanban";
 
-const initialColumns = canbanData.map((column) => ({
-  id: column.id,
-  name: column.name,
-  color: column.color,
-  tasks: column.canbans.map((canban) => canban.id), // canbanlardan id larni olish
-}));
+// Tiplar
 
-const initialTasks = canbanData.flatMap((column) =>
-  column.canbans.map((canban) => ({
-    id: canban.id,
-    content: canban.project_name, // yoki boshqa kerakli ma'lumot
-  }))
-);
+interface ColumnType {
+  id: number;
+  name: string;
+  color: string;
+  tasks: number[];
+}
 
-function KanbanBoard() {
-  const [columns, setColumns] = useState(initialColumns);
-  const [tasks, setTasks] = useState(initialTasks);
+const KanbanBoard: React.FC = () => {
+  // State: columns keyed by ID va tasks massiv
+  const [columns, setColumns] = useState<Record<number, ColumnType>>({});
+  const [tasks, setTasks] = useState<Partial<TaskType>[]>([]);
 
   const sensors = useSensors(useSensor(PointerSensor));
+  const { data: apiData, isLoading } = useGetCanbanBoardQuery();
 
-  // handleDragEnd: Taskni ko'chirish va ustunlarni yangilash
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over) return;
-    if (active.id === over.id) return;
+  // Ma'lumot kelganda state ni to'ldiramiz
+  useEffect(() => {
+    if (!isLoading && apiData?.data) {
+      const data = apiData.data as ColumnData[];
 
-    // Tasklar joylashgan ustunlar ID sini topamiz
-    let sourceColumnId, destinationColumnId;
-
-    for (let colId in columns) {
-      if (columns[colId].tasks.includes(active.id)) {
-        sourceColumnId = colId;
-      }
-      if (columns[colId].tasks.includes(over.id)) {
-        destinationColumnId = colId;
-      }
-    }
-
-    // Agar bir ustundagi ichida joylashuv o‘zgargan bo‘lsa
-    if (sourceColumnId && destinationColumnId) {
-      const sourceTasks = [...columns[sourceColumnId].tasks];
-      const destinationTasks = [...columns[destinationColumnId].tasks];
-
-      // O‘chir task
-      const draggedTaskIndex = sourceTasks.indexOf(active.id);
-      sourceTasks.splice(draggedTaskIndex, 1);
-
-      // Qo‘sh task
-      const overIndex = destinationTasks.indexOf(over.id);
-      destinationTasks.splice(overIndex, 0, active.id);
-
-      setColumns({
-        ...columns,
-        [sourceColumnId]: {
-          ...columns[sourceColumnId],
-          tasks: sourceTasks,
-        },
-        [destinationColumnId]: {
-          ...columns[destinationColumnId],
-          tasks: destinationTasks,
-        },
+      // Columns obyektini yaratish
+      const cols: Record<number, ColumnType> = {};
+      data.forEach((col) => {
+        cols[col.id] = {
+          id: col.id,
+          name: col.name,
+          color: col.color,
+          tasks: col.canbans.map((item) => item.id),
+        };
       });
+      setColumns(cols);
+
+      // Tasks massivini yaratish
+      const allTasks: Partial<TaskType>[] = data.flatMap((col) => {
+        return col.canbans.map((item) => ({ ...item }));
+      });
+      setTasks(allTasks);
     }
-  };
+  }, [apiData, isLoading]);
+
+  if (isLoading) return <p>Loading...</p>;
+
+  // // Drag tugashi handler
+  // const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
+  //   if (!over || active.id === over.id) return;
+
+  //   let sourceId: number | null = null;
+  //   let destId: number | null = null;
+
+  //   // Har bir columnni tekshirib qaysida ekanini aniqlaymiz
+  //   Object.values(columns).forEach((col) => {
+  //     if (col.tasks.includes(active.id)) sourceId = col.id;
+  //     if (col.tasks.includes(over.id)) destId = col.id;
+  //   });
+
+  //   if (sourceId !== null && destId !== null) {
+  //     const sourceTasks = [...columns[sourceId].tasks];
+  //     const destTasks = [...columns[destId].tasks];
+
+  //     // Source dan o'chirish
+  //     sourceTasks.splice(sourceTasks.indexOf(active.id), 1);
+  //     // Destination ga joylash
+  //     const overIndex = destTasks.indexOf(over.id);
+  //     destTasks.splice(overIndex, 0, active.id);
+
+  //     setColumns({
+  //       ...columns,
+  //       [sourceId]: { ...columns[sourceId], tasks: sourceTasks },
+  //       [destId]: { ...columns[destId], tasks: destTasks },
+  //     });
+  //   }
+  // };
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+      // onDragEnd={handleDragEnd}
     >
-      <div style={{ display: "flex", gap: "16px", padding: "16px" }}>
-        {columns.map((column) => (
+      <div style={{ display: "flex", gap: 16, padding: 16 }}>
+        {Object.values(columns).map((col) => (
           <SortableContext
-            key={column.id}
-            items={column.tasks}
+            key={col.id}
+            items={col.tasks}
             strategy={verticalListSortingStrategy}
           >
-            <Column
-              column={column}
-              tasks={column.tasks.map((taskId) =>
-                tasks.find((task) => task.id === taskId)
+            <ColumnCanban
+              column={col}
+              mainData={apiData?.data}
+              tasks={col.tasks.map((taskId) =>
+                tasks.find((t) => t.id === taskId)
               )}
             />
           </SortableContext>
@@ -102,6 +114,6 @@ function KanbanBoard() {
       </div>
     </DndContext>
   );
-}
+};
 
 export default KanbanBoard;

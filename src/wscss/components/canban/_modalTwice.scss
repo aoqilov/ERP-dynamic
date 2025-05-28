@@ -1,0 +1,10 @@
+.modalTwice {
+  background: blanchedalmond;
+  &__modal {
+    position: relative;
+    top: 30px;
+  }
+  &__form {
+    padding: 20px 0;
+  }
+}

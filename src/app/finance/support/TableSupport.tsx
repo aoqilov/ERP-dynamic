@@ -1,74 +1,93 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Popconfirm, Table, Tooltip } from "antd";
+import { Button, Popconfirm, Table, Tooltip } from "antd";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import {
-  useDeleteFinanceExpenseMutation,
-  useGetFinanceExpenceQuery,
-} from "@/store/slices/finance/FinanceExpenseApi";
-import dayjs from "dayjs";
-import { Expense, ExpenseQueryParams } from "@/types/finance/expense";
 import { IoIosArrowDown } from "react-icons/io";
-import ExpenseCreate from "@/components/finance/expense/ExpenseCreate";
+import { IoCardOutline } from "react-icons/io5";
+import { FaRegCommentDots } from "react-icons/fa6";
+import {
+  useDeleteFinanceSupportMutation,
+  useGetFinanceSupportQuery,
+} from "@/store/slices/finance/FinanceSupportApi";
+import { Support } from "@/types/finance/support";
+import SupportCreateEdit from "@/components/finance/support/SupportCreateEdit";
+import SupportPayment from "@/components/finance/support/SupportPayment";
+import SupportSms from "@/components/finance/support/SupportSms";
 
-const TableExpense = () => {
-  const { RangePicker } = DatePicker;
-
+const TableSupport = () => {
   const [createOpen, SetIsCreateOpen] = useState(false);
-  const [editData, SetEditData] = useState<Expense | null>(null);
+  const [paymentOpen, SetIsPaymentOpen] = useState(false);
+  const [smsOpen, SetIsSmsOpen] = useState(false);
+  const [editData, SetEditData] = useState<Support | null>(null);
+  const [paymentData, setPaymentData] = useState<Support | null>(null);
+  const [smsData, SetIsSmsData] = useState<Support | null>(null);
+
   useEffect(() => {
     if (editData) {
       SetIsCreateOpen(true);
     }
   }, [editData]);
+
+  useEffect(() => {
+    if (paymentData) {
+      SetIsPaymentOpen(true);
+    }
+  }, [paymentData]);
+
+  useEffect(() => {
+    if (smsData) {
+      SetIsSmsOpen(true);
+    }
+  }, [smsData]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
-  const params: ExpenseQueryParams | Omit<ExpenseQueryParams, "from" | "to"> = {
+  const [deleteMutation, { isLoading: deleteLoading }] =
+    useDeleteFinanceSupportMutation();
+
+  const { data, isFetching } = useGetFinanceSupportQuery({
     page: currentPage,
     page_size: pageSize,
-    ...(range && {
-      from: range[0].valueOf(),
-      to: range[1].valueOf(),
-    }),
-  };
-  const { data, isFetching } = useGetFinanceExpenceQuery(params);
-  const [deleteMutation, { isLoading }] = useDeleteFinanceExpenseMutation();
+  });
 
-  const columns = [
+  const columnsSupport = [
     {
-      title: "Expense name",
+      title: "Project name",
       dataIndex: "project_name",
-      key: "expenseName",
+      key: "Projectname",
       width: "15%",
     },
     {
-      title: "Type",
-      key: "type",
-      render: (expenseTypes: Expense) => (
-        <>
-          {expenseTypes.expense_types.map((item) => (
-            <div key={item.id}>{item.name}</div>
-          ))}
-        </>
+      title: "Contact",
+      dataIndex: "phone_number",
+      key: "Contact",
+      width: "15%",
+    },
+    {
+      title: "Pay date",
+      dataIndex: "pay_date",
+      key: "Paydate",
+    },
+    {
+      title: "Balance",
+      dataIndex: "balance",
+      key: "Balance",
+      render: (item: number) => (
+        <p style={{ color: "green", fontWeight: "bold" }}>
+          {item.toLocaleString("ru-RU")}
+        </p>
       ),
     },
     {
-      title: "Current rate",
-      dataIndex: "current_rate",
-      key: "currentRate",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
+      title: "Pay type	",
+      dataIndex: ["currency", "name"],
       key: "date",
-      render: (item: number) => <p>{dayjs(+item).format("DD.MM.YYYY")}</p>,
     },
     {
       title: "Comment",
       dataIndex: "comment",
       key: "comment",
-      width: "20%",
+      width: "15%",
       ellipsis: true,
       render: (text: string) => {
         const isEmpty = !text;
@@ -99,21 +118,22 @@ const TableExpense = () => {
         );
       },
     },
-    {
-      title: "Method",
-      dataIndex: "method",
-      key: "method",
-    },
+
     {
       title: "Cost",
       dataIndex: "cost",
       key: "cost",
+      render: (item: number, render: Support) => (
+        <p>
+          {render.cost.toLocaleString()} {render.currency.name}
+        </p>
+      ),
     },
     {
-      title: "Action",
+      title: "Edit",
       key: "edit",
-      width: "9%",
-      render: (item: Expense) => (
+      width: "15%",
+      render: (item: Support) => (
         <div
           style={{
             display: "flex",
@@ -124,34 +144,38 @@ const TableExpense = () => {
           <div style={{ cursor: "pointer" }} onClick={() => SetEditData(item)}>
             <FaEdit color="blue" />
           </div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setPaymentData(item)}
+          >
+            <IoCardOutline />
+          </div>
+          <div style={{ cursor: "pointer" }} onClick={() => SetIsSmsData(item)}>
+            <FaRegCommentDots />
+          </div>
           <Popconfirm
             title="Are you sure to delete?"
             onConfirm={() => deleteMutation({ id: item.id })}
             okText="Yes"
             cancelText="No"
-            okButtonProps={{ loading: isLoading }}
+            okButtonProps={{ loading: deleteLoading }}
           >
             <div style={{ cursor: "pointer" }}>
               <FaTrash color="red" />
             </div>
           </Popconfirm>
         </div>
-      ), // Bu yerga button yoki ikoncha qo‘shishingiz mumkin
+      ),
     },
   ];
   return (
-    <div className="expense">
-      <div className="expense__title">
+    <div className="income">
+      <div className="income__title">
         <div className="title-info">
-          <h5 className="info-tit">Expenses</h5>
+          <h5 className="info-tit">Support</h5>
           <p className="info-desc">Here you may track financial information</p>
         </div>
         <div className="title-btns">
-          <RangePicker
-            value={range}
-            onChange={(dates) => setRange(dates)}
-            format="DD.MM.YYYY"
-          />
           <Button
             type="primary"
             icon={<FaPlus />}
@@ -162,12 +186,12 @@ const TableExpense = () => {
           </Button>
         </div>
       </div>
-      <div className="expense__table">
+      <div className="income__table">
         <Table
           rowKey={"id"}
-          columns={columns}
-          loading={isFetching}
+          columns={columnsSupport}
           dataSource={data?.data}
+          loading={isFetching}
           footer={() =>
             data?.per_currency ? (
               <div style={{ display: "flex", justifyContent: "end" }}>
@@ -181,21 +205,22 @@ const TableExpense = () => {
                     width: 150,
                   }}
                 >
-                  {data.per_currency[0].currency}:
-                  {data.per_currency[0].total_cost}
+                  {data.per_currency.map((item) => (
+                    <p key={item.currency}>
+                      {item.currency + ": " + item.total_cost}
+                    </p>
+                  ))}
                 </div>
               </div>
             ) : null
           }
           pagination={{
             position: ["bottomRight"],
-            // ikkala tomonda
-
             current: currentPage,
             pageSize: pageSize,
-            showSizeChanger: true, // bu "10 / page" dropdownni chiqaradi
-            pageSizeOptions: ["2", "4", "6"], // allowed page sizes
-            total: data?.total_elements, // umumiy sahifalar soni
+            showSizeChanger: true,
+            total: data?.total_pages,
+            pageSizeOptions: ["10", "20", "50"],
             onChange: (page, size) => {
               setCurrentPage(page);
               setPageSize(size);
@@ -203,13 +228,23 @@ const TableExpense = () => {
           }}
         />
       </div>
-      <ExpenseCreate
+      <SupportCreateEdit
         createOpen={createOpen}
         createCloes={() => SetIsCreateOpen(false)}
         editData={editData}
+      />
+      <SupportPayment
+        paymentOpen={paymentOpen}
+        paymentCloes={() => SetIsPaymentOpen(false)}
+        paymentData={paymentData}
+      />
+      <SupportSms
+        smsOpen={smsOpen}
+        smsCloes={() => SetIsSmsOpen(false)}
+        smsData={smsData}
       />
     </div>
   );
 };
 
-export default TableExpense;
+export default TableSupport;

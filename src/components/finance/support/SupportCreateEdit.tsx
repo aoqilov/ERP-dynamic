@@ -1,14 +1,12 @@
 import {
-  useCreateFinanceExpenseMutation,
-  useUpdateFinanceExpenseMutation,
-} from "@/store/slices/finance/FinanceExpenseApi";
+  useCreateFinanceSupportMutation,
+  useUpdateFinanceSupportMutation,
+} from "@/store/slices/finance/FinanceSupportApi";
 import { useGetActiveCurrencyQuery } from "@/store/slices/settingsApi/SttCurrencyApi";
-import { useGetAllExpenceQuery } from "@/store/slices/settingsApi/SttExpenceApi";
-import { Expense, ExpenseSubmitPayload } from "@/types/finance/expense";
+import { Support } from "@/types/finance/support";
 import {
   Button,
   Col,
-  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -17,25 +15,22 @@ import {
   Row,
   Select,
 } from "antd";
-import dayjs from "dayjs";
 import React, { useEffect } from "react";
 
 type PropsCreate = {
   createOpen: boolean;
   createCloes: () => void;
-  editData?: Expense | null; // yangi qo‘shildi
+  editData?: Support | null; // yangi qo‘shildi
 };
-const ExpenseCreate: React.FC<PropsCreate> = ({
+const SupportCreateEdit: React.FC<PropsCreate> = ({
   createOpen,
   createCloes,
   editData,
 }) => {
   // rtk
-  const [createMutate, { isLoading }] = useCreateFinanceExpenseMutation();
+  const [createMutate, { isLoading }] = useCreateFinanceSupportMutation();
   const [updateMutate, { isLoading: isLoadingUpdate }] =
-    useUpdateFinanceExpenseMutation();
-
-  const { data: forSelectExpense } = useGetAllExpenceQuery();
+    useUpdateFinanceSupportMutation();
   const { data: forSelectCurrency } = useGetActiveCurrencyQuery();
   // mutation
 
@@ -48,29 +43,20 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
     if (editData) {
       form.setFieldsValue({
         ...editData,
-        date: dayjs(+editData.date),
-        expense_types: editData.expense_types.map((e) => e.id),
+        currency: editData.currency.name,
+        // date: dayjs(+editData.date),
+        // income_types: editData.income_types.map((e) => e.id),
+        // sales_agent: editData.sales_agent.fullname,
       });
     } else {
       form.resetFields();
     }
   }, [editData, form]);
 
-  const handleSubmit = async (values: Expense) => {
-    const joinDateMs = dayjs(values.date).valueOf();
-    const newData: ExpenseSubmitPayload = {
+  const handleSubmit = async (values: Support) => {
+    const newData: Support = {
       ...values,
-      date: String(joinDateMs),
-      cost: +values.cost,
-      current_rate: +values.current_rate,
-      expense_types: Array.isArray(values.expense_types)
-        ? values.expense_types.map(
-            (item) =>
-              typeof item === "object" && item !== null
-                ? { id: item.id } // item object bo‘lsa
-                : { id: item } // item number bo‘lsa
-          )
-        : [{ id: values.expense_types }],
+      currency: { id: Number(values.currency) },
     };
 
     try {
@@ -95,7 +81,7 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
     <div>
       {context}
       <Modal
-        width={"80%"}
+        width={"60%"}
         open={createOpen}
         footer={null}
         onCancel={createCloes}
@@ -109,64 +95,38 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
               <Col span={8}>
                 <Form.Item
                   name="project_name"
-                  label="Name"
+                  label="Project name"
                   rules={[{ required: true }]}
                 >
-                  <Input placeholder="write full name..." size="large" />
+                  <Input placeholder="write name..." size="large" />
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item
-                  name="expense_types"
-                  label="Income type"
+                  name="phone_number"
+                  label="Phone number"
                   rules={[{ required: true }]}
                 >
-                  <Select placeholder="select expense type" size="large">
-                    {forSelectExpense?.data.map((item) => (
-                      <Option key={item.id} value={item.id}>
-                        {item.name}
-                      </Option>
-                    ))}
+                  <Input placeholder="write phone number..." size="large" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  name="pay_date"
+                  label="Pay date"
+                  rules={[{ required: true }]}
+                >
+                  <Select placeholder="write phone number..." size="large">
+                    <Option value={1}>1</Option>
+                    <Option value={2}>2</Option>
+                    <Option value={3}>3</Option>
+                    <Option value={4}>4</Option>
+                    <Option value={5}>5</Option>
+                    <Option value={6}>6</Option>
+                    <Option value={7}>7</Option>
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item
-                  name="method"
-                  label="Method"
-                  rules={[{ required: true }]}
-                >
-                  <Select placeholder="select curency" size="large">
-                    <Option value={"cash"}>Cash</Option>
-                    <Option value={"card"}>Card</Option>
-                    <Option value={"bank"}>Bank</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item
-                  name="date"
-                  label="Date"
-                  rules={[{ required: true }]}
-                >
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    format="DD/MM/YYYY"
-                    placeholder="DD/MM/YYYY"
-                    size="large"
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item
-                  name="comment"
-                  label="Comment"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="write full name..." size="large" />
-                </Form.Item>
-              </Col>
-
               <Col span={5}>
                 <Form.Item
                   name="cost"
@@ -204,28 +164,20 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
                     }}
                   >
                     {forSelectCurrency?.data.map((item) => (
-                      <Select.Option key={item.id} value={item.name}>
+                      <Select.Option key={item.id} value={item.id}>
                         {item.name}
                       </Select.Option>
                     ))}
                   </Select>
                 </Form.Item>
               </Col>
-
               <Col span={8}>
                 <Form.Item
-                  name="current_rate"
-                  label="Current currency rate"
+                  name="comment"
+                  label="Comment"
                   rules={[{ required: true }]}
                 >
-                  <InputNumber
-                    style={{ width: "100%" }}
-                    size="large"
-                    placeholder="Enter amount..."
-                    formatter={(value) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                    }
-                  />
+                  <Input placeholder="write full name..." size="large" />
                 </Form.Item>
               </Col>
             </Row>
@@ -248,4 +200,4 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
   );
 };
 
-export default ExpenseCreate;
+export default SupportCreateEdit;

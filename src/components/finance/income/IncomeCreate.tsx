@@ -1,10 +1,12 @@
 import {
-  useCreateFinanceExpenseMutation,
-  useUpdateFinanceExpenseMutation,
-} from "@/store/slices/finance/FinanceExpenseApi";
+  useCreateFinanceIncomeMutation,
+  useGetFinanceIncomeSalesQuery,
+  useUpdateFinanceIncomeMutation,
+} from "@/store/slices/finance/FinanceIncomeApi";
 import { useGetActiveCurrencyQuery } from "@/store/slices/settingsApi/SttCurrencyApi";
 import { useGetAllExpenceQuery } from "@/store/slices/settingsApi/SttExpenceApi";
-import { Expense, ExpenseSubmitPayload } from "@/types/finance/expense";
+import { Income, IncomeSubmitPayload } from "@/types/finance/income";
+import { SalesAgent } from "@/types/SalesCanban";
 import {
   Button,
   Col,
@@ -23,18 +25,18 @@ import React, { useEffect } from "react";
 type PropsCreate = {
   createOpen: boolean;
   createCloes: () => void;
-  editData?: Expense | null; // yangi qo‘shildi
+  editData?: Income | null; // yangi qo‘shildi
 };
-const ExpenseCreate: React.FC<PropsCreate> = ({
+const IncomeCreate: React.FC<PropsCreate> = ({
   createOpen,
   createCloes,
   editData,
 }) => {
   // rtk
-  const [createMutate, { isLoading }] = useCreateFinanceExpenseMutation();
+  const [createMutate, { isLoading }] = useCreateFinanceIncomeMutation();
   const [updateMutate, { isLoading: isLoadingUpdate }] =
-    useUpdateFinanceExpenseMutation();
-
+    useUpdateFinanceIncomeMutation();
+  const { data: forSelectSales } = useGetFinanceIncomeSalesQuery();
   const { data: forSelectExpense } = useGetAllExpenceQuery();
   const { data: forSelectCurrency } = useGetActiveCurrencyQuery();
   // mutation
@@ -49,28 +51,34 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
       form.setFieldsValue({
         ...editData,
         date: dayjs(+editData.date),
-        expense_types: editData.expense_types.map((e) => e.id),
+        income_types: editData.income_types.map((e) => e.id),
+        sales_agent: editData.sales_agent.fullname,
       });
     } else {
       form.resetFields();
     }
   }, [editData, form]);
 
-  const handleSubmit = async (values: Expense) => {
+  const handleSubmit = async (values: Income) => {
     const joinDateMs = dayjs(values.date).valueOf();
-    const newData: ExpenseSubmitPayload = {
+    const newData: IncomeSubmitPayload = {
       ...values,
       date: String(joinDateMs),
       cost: +values.cost,
       current_rate: +values.current_rate,
-      expense_types: Array.isArray(values.expense_types)
-        ? values.expense_types.map(
-            (item) =>
-              typeof item === "object" && item !== null
-                ? { id: item.id } // item object bo‘lsa
-                : { id: item } // item number bo‘lsa
+      sales_agent: {
+        id:
+          typeof values.sales_agent === "object" && values.sales_agent !== null
+            ? values.sales_agent.id
+            : values.sales_agent,
+      },
+      income_types: Array.isArray(values.income_types)
+        ? values.income_types.map((item) =>
+            typeof item === "object" && item !== null
+              ? { id: item.id }
+              : { id: item }
           )
-        : [{ id: values.expense_types }],
+        : [{ id: values.income_types }],
     };
 
     try {
@@ -117,11 +125,11 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
               </Col>
               <Col span={8}>
                 <Form.Item
-                  name="expense_types"
+                  name="income_types"
                   label="Income type"
                   rules={[{ required: true }]}
                 >
-                  <Select placeholder="select expense type" size="large">
+                  <Select placeholder="select income type" size="large">
                     {forSelectExpense?.data.map((item) => (
                       <Option key={item.id} value={item.id}>
                         {item.name}
@@ -159,11 +167,17 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
               </Col>
               <Col span={8}>
                 <Form.Item
-                  name="comment"
-                  label="Comment"
+                  name="sales_agent"
+                  label="Sales agent"
                   rules={[{ required: true }]}
                 >
-                  <Input placeholder="write full name..." size="large" />
+                  <Select placeholder="select sales agent" size="large">
+                    {forSelectSales?.data.map((item: SalesAgent) => (
+                      <Option key={item.id} value={item.id}>
+                        {item.fullname}(sales)
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
 
@@ -211,7 +225,15 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
                   </Select>
                 </Form.Item>
               </Col>
-
+              <Col span={8}>
+                <Form.Item
+                  name="comment"
+                  label="Comment"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="write full name..." size="large" />
+                </Form.Item>
+              </Col>
               <Col span={8}>
                 <Form.Item
                   name="current_rate"
@@ -248,4 +270,4 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
   );
 };
 
-export default ExpenseCreate;
+export default IncomeCreate;

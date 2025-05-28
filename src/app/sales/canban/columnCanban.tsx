@@ -1,27 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TaskCard from "./taskCanban";
-import { Button, Dropdown, Menu } from "antd";
-import { FaAngleDown } from "react-icons/fa6";
+import { Button } from "antd";
 import "../../../wscss/components/canban/_canbanColumn.scss";
 import { FaPlus } from "react-icons/fa";
+import {
+  ColumnTypeStr,
+  StatusResponseCanbanItem,
+  TaskType,
+} from "@/types/SalesCanban";
+import ModalTwice from "@/components/sales/canban/ModalTwiceCanban";
 
-function Column({ column, tasks }) {
-  const totalId = tasks.reduce((sum, item) => sum + item.id, 0);
-  const menu = (
-    <Menu
-      items={tasks.map((item) => ({
-        key: item.id,
-        label: `count id:${totalId}`,
-      }))}
-    />
-  );
+type propsCanbana = {
+  column: ColumnTypeStr;
+  tasks: TaskType[] | undefined;
+  mainData: StatusResponseCanbanItem[] | undefined;
+};
+const ColumnCanban: React.FC<propsCanbana> = ({ column, tasks, mainData }) => {
+  const [activeStatus, setActiveStatus] = useState<number | null>(null);
+  const [modalTwiceOpen, setModalTwiceOpen] = useState(false);
+
+  //
+  useEffect(() => {
+    if (activeStatus) {
+      setModalTwiceOpen(true);
+    }
+  }, [activeStatus]);
+
   return (
     <div
       className="column"
       style={{
-        padding: "10px",
         borderRadius: "8px",
-        width: "250px",
+        background: "#F5F5F5",
       }}
     >
       <div className="column__title">
@@ -30,15 +40,11 @@ function Column({ column, tasks }) {
             fontSize: 14,
             fontWeight: 400,
             color: column.color,
+            width: "240px",
           }}
         >
           {column.name}
         </h3>
-        <Dropdown menu={menu} trigger={["hover"]}>
-          <Button type="default" icon={<FaAngleDown />} iconPosition="end">
-            Overall Cost
-          </Button>
-        </Dropdown>
       </div>
       <div className="column__border"></div>
       <div className="column__add">
@@ -47,18 +53,25 @@ function Column({ column, tasks }) {
           type="default"
           icon={<FaPlus />}
           iconPosition="end"
+          onClick={() => mainData?.map(() => setActiveStatus(column.id))}
         >
           New card
         </Button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {tasks.map((task) => (
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {tasks?.map((task: TaskType) => (
           <TaskCard key={task.id} task={task} column={column} />
         ))}
       </div>
+      <ModalTwice
+        modalTwiceOpen={modalTwiceOpen}
+        modalTwiceClose={() => setModalTwiceOpen(false)}
+        mainData={mainData}
+        activeStatus={activeStatus}
+      />
     </div>
   );
-}
+};
 
-export default Column;
+export default ColumnCanban;

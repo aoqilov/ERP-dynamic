@@ -83,7 +83,6 @@ const EmployesLayout = () => {
     }));
   };
 
-  console.log(employers);
   // delete
   const [deleteEmploye] = useDeleteEmployeMutation();
   //

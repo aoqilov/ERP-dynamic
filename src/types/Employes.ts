@@ -24,11 +24,9 @@ export type EmployesType = {
     id: number;
   };
 
-  company: [
-    {
-      id: number;
-    }
-  ];
+  company: {
+    id: number;
+  };
 
   job_title: {
     id: number;

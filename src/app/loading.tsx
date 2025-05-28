@@ -2,7 +2,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Flex, Spin } from "antd";
 import React from "react";
 
-const loading = () => {
+const Loading = () => {
   return (
     <div className="page-loading">
       <Flex align="center" gap="middle">
@@ -12,4 +12,4 @@ const loading = () => {
   );
 };
 
-export default loading;
+export default Loading;

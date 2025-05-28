@@ -37,7 +37,7 @@ const ModalCreateEmployes: React.FC<Props> = ({ open, onCancel }) => {
       ...values,
       salary: Number(values.salary),
       work_experience: { id: +values.work_experience },
-      company: [{ id: +values.company }], // agar company array tipida bo'lsa
+      company: { id: +values.company }, // agar company array tipida bo'lsa
       region: { id: +values.region },
       job_title: { id: +values.job_title },
       currency: { id: +values.currency },

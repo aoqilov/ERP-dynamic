@@ -1,7 +1,12 @@
 import React from "react";
+import TableSupport from "./TableSupport";
 
-const SupportPage = () => {
-  return <div>SupportPage</div>;
+const IncomePage = () => {
+  return (
+    <div>
+      <TableSupport />
+    </div>
+  );
 };
 
-export default SupportPage;
+export default IncomePage;

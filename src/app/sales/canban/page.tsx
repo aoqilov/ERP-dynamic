@@ -4,15 +4,37 @@ import type { ApexOptions } from "apexcharts";
 import { DatePicker } from "antd";
 import CanbanTodo from "./CanbanTodo";
 import { useGetCanbanBoardQuery } from "@/store/slices/SalesApi/SlCanbanApi";
+import { useState, useEffect } from "react";
+import Loading from "@/app/loading";
 
 const { RangePicker } = DatePicker;
+
 const CanbanPage = () => {
   const { data: canbanData, isLoading } = useGetCanbanBoardQuery();
+  const [chartSeries, setChartSeries] = useState<
+    { name: string; data: number[] }[]
+  >([]);
+  const [chartColors, setChartColors] = useState<string[]>([]); // 🆕 colors state
+  const [totalTaskNumber, setTotalTaskNumber] = useState<
+    string | number | undefined
+  >(0);
+  console.log(canbanData?.data);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!canbanData?.data) return <p>No data</p>;
+  useEffect(() => {
+    if (canbanData?.data) {
+      const resData = canbanData.data.map((col) => ({
+        name: col.name,
+        data: [col.canbans?.length],
+        //  data: [col.canbans?.filter(c => c.sales_agent.fullname === "Muzaffarxon Abdusalomov").length || 0]
+      }));
+      const total = resData.reduce((sum, item) => sum + (item.data[0] || 0), 0);
 
-  console.log(canbanData); // ✅ Tip xatoliksiz
+      setTotalTaskNumber(total);
+      setChartSeries(resData);
+      const resColors = canbanData.data.map((col) => col.color || "#CCCCCC");
+      setChartColors(resColors);
+    }
+  }, [canbanData]);
 
   const chartOptions: ApexOptions = {
     chart: {
@@ -35,15 +57,7 @@ const CanbanPage = () => {
     fill: {
       opacity: 1,
     },
-    colors: [
-      "#FF3C38", // Backlog
-      "#6D4C41", // In progress
-      "#8D6E63", // Ready prod
-      "#4CAF50", // Qoulified
-      "#000000", // Meeting
-      "#8BC34A", // Abdulaziz
-      "#E0E0E0", // Taklif qinindi
-    ],
+
     dataLabels: {
       enabled: true,
     },
@@ -53,30 +67,46 @@ const CanbanPage = () => {
       custom: function ({ seriesIndex, dataPointIndex, w }) {
         const seriesName = w.config.series[seriesIndex].name;
         const value = w.config.series[seriesIndex].data[dataPointIndex];
-        const categoryLabel = w.config.xaxis.categories[dataPointIndex]; // 'Muzaffarxon Abdusalomov'
+        const categoryLabel = w.config.xaxis.categories[dataPointIndex];
 
         return `
-      <div style="padding: 8px; font-size: 14px;">
-        <p><strong>${categoryLabel}</strong></p>
-        <div>
-          <span style="color: ${w.config.colors[seriesIndex]}; font-weight: bold;">●</span>
-          ${seriesName}: ${value}
+        <div style="padding: 8px; font-size: 14px;">
+          <p><strong>${categoryLabel}</strong></p>
+          <div>
+            <span style="color: ${w.config.colors[seriesIndex]}; font-weight: bold;">●</span>
+            ${seriesName}: ${value}
+          </div>
         </div>
-      </div>
-    `;
+      `;
       },
+    },
+    colors: chartColors, // ✅ dynamic colors
+
+    annotations: {
+      points: [
+        {
+          x: totalTaskNumber, // umumiy qiymat (total)
+          y: "Muzaffarxon Abdusalomov", // xaxis.categories dagi qiymat
+          marker: {
+            size: 0, // markerni yo'q qilamiz
+          },
+          label: {
+            text: `${totalTaskNumber}`,
+            style: {
+              fontSize: "30px",
+              color: "#000000",
+              fontWeight: 600,
+            },
+            offsetX: 40, // chapga / o'ngga siljitish
+            offsetY: 20,
+          },
+        },
+      ],
     },
   };
 
-  const chartSeries = [
-    { name: "Backlog", data: [1] },
-    { name: "In progress", data: [4] },
-    { name: "Ready prod", data: [1] },
-    { name: "Qoulified", data: [4] },
-    { name: "meeting", data: [1] },
-    { name: "abdulaziz", data: [1] },
-    { name: "Taklif qinindi", data: [1] },
-  ];
+  if (isLoading) return <Loading />;
+  if (!canbanData?.data) return <p>No data</p>;
 
   return (
     <div className="canban">

@@ -1,40 +1,62 @@
 "use client";
-import { usePathname } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Layout, Spin, Flex } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-
-import { Button, Flex, Layout, Menu, Spin, theme } from "antd";
-import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import { Provider } from "react-redux";
 import sidebarMenu from "@/lib/static/layout/sidebarMenu";
 import Image from "next/image";
-
-// import { MdLogout } from "react-icons/md";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Button, Menu } from "antd";
+import dayjs from "dayjs";
 
 const { Sider, Content } = Layout;
+
 interface AppLayoutProps {
   children: ReactNode;
 }
+
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const pathname = usePathname();
-
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: {},
-  } = theme.useToken();
   const [isMounted, setIsMounted] = useState(false);
+  const [authorized, setAuthorized] = useState(true);
 
   useEffect(() => {
-    // sahifa to‘liq yuklanganda isMounted true bo‘ladi
+    const token = localStorage.getItem("token");
+    const expiration = localStorage.getItem("token_expiration");
+
+    const isLoginPage = pathname.startsWith("/auth/login");
+
+    if (expiration) {
+      const now = dayjs();
+      const expirationDate = dayjs(expiration);
+
+      if (expirationDate.isBefore(now)) {
+        localStorage.clear();
+        router.push("/auth/login");
+        return;
+      }
+    }
+
+    if (!token && !isLoginPage) {
+      router.push("/auth/login");
+    } else if (token && isLoginPage) {
+      router.push("/projects");
+    } else {
+      setAuthorized(true);
+    }
+
     const timer = setTimeout(() => {
       setIsMounted(true);
-    }, 500); // istasangiz 100 yoki 0 ham qilsa bo‘ladi
-    return () => clearTimeout(timer);
-  }, []);
+    }, 300);
 
-  if (!isMounted) {
+    return () => clearTimeout(timer);
+  }, [pathname, router]);
+
+  if (!isMounted || !authorized) {
     return (
       <div className="page-loading">
         <Flex align="center" gap="middle">
@@ -44,9 +66,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     );
   }
 
-  // openKeys uchun birinchi segmentni olamiz (masalan: /settings/jobtitle => settings)
   const rootKey = pathname.split("/")[1];
   const openKeys = rootKey ? [rootKey] : [];
+
+  const userDataString = localStorage.getItem("userData");
+  const userData = userDataString ? JSON.parse(userDataString) : null;
 
   return (
     <Layout className="layout" style={{ height: "100vh", overflowY: "unset" }}>
@@ -57,11 +81,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             className="logo-colapsed"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "24px",
-              width: 30,
-              height: 40,
-            }}
+            style={{ fontSize: "24px", width: 30, height: 40 }}
           />
           <Image
             src="https://test.erp.dynamicsoft.uz/static/media/logo.8e3ad7260923ae78ee557cb474b0a830.svg"
@@ -78,10 +98,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             height={40}
           />
           <div className="user-info">
-            <div className="info-name">testboy testovich</div>
+            <div className="info-name">{userData?.fullname}</div>
             <div className="info-degrees">
-              <p className="type">Frontend</p>
-              <p className="level">junoir</p>
+              <p className="type">{userData?.role}</p>
+              <p className="level">{userData?.status ? "LEAD" : ""}</p>
             </div>
           </div>
         </div>
@@ -92,29 +112,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           theme="light"
           trigger={null}
           collapsible
-          width={collapsed == true ? 300 : 240}
-          // width={collapsed ? 300 : 50}
+          width={collapsed ? 300 : 240}
           collapsed={collapsed}
           style={{ overflowY: "auto" }}
         >
-          <div className="demo-logo-vertical">
-            <Menu
-              className="sidebar__menu"
-              mode="inline"
-              items={sidebarMenu}
-              selectedKeys={[pathname]} // aktiv link
-              defaultOpenKeys={openKeys} // submenu ochiq bo‘ladi
-            />
-            {/* <Button
-              iconPosition="start"
-              icon={<MdLogout size={24} />}
-              type="text"
-              danger
-              className="logout"
-            >
-              Logout
-            </Button> */}
-          </div>
+          <Menu
+            className="sidebar__menu"
+            mode="inline"
+            items={sidebarMenu}
+            selectedKeys={[pathname]}
+            defaultOpenKeys={openKeys}
+          />
         </Sider>
         <Provider store={store}>
           <Content className="content">{children}</Content>

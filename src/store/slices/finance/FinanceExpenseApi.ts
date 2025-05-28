@@ -10,13 +10,20 @@ export const FinanceExpenseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     prepareHeaders: (headers) => {
-      const token = process.env.NEXT_PUBLIC_TOKEN;
-      if (token) {
+      let token: string | null = localStorage.getItem("token");
+
+      if (token !== null) {
+        // Agar token atrofida qo‘sh tirnoq bo‘lsa, ularni olib tashlaymiz:
+        if (token.startsWith('"') && token.endsWith('"')) {
+          token = token.slice(1, -1);
+        }
         headers.set("Authorization", `Bearer ${token}`);
       }
+
       return headers;
     },
   }),
+
   tagTypes: ["FinanceExpense"],
   endpoints: (builder) => ({
     // GET: all expenses
