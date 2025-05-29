@@ -48,6 +48,28 @@ export const SlCanbanApi = createApi({
       invalidatesTags: (result, error, { id }) => [{ type: "SlCanban", id }],
     }),
 
+    updateCanbanOrder: builder.mutation<any, any>({
+      query: (canbans) => ({
+        url: '/canban/update-canban-order',
+        method: "PATCH",
+        body: canbans,
+      }),
+      invalidatesTags: ["SlCanban"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          
+          setTimeout(() => {
+            dispatch(SlCanbanApi.util.invalidateTags(["SlCanban"]));
+            console.log("Manual cache invalidation triggered");
+          }, 1000);
+          
+        } catch (error) {
+          console.error("Mutation failed:", error);
+        }
+      },
+    }),
+
     // // DELETE
     // deleteCanbanBoard: builder.mutation<>({
     //   query: (id) => ({
@@ -63,7 +85,7 @@ export const {
   useGetCanbanBoardQuery,
   useCreateCanbanBoardMutation,
   useUpdateCanbanBoardMutation,
-
+  useUpdateCanbanOrderMutation,
   // useCreateCanbanBoardMutation,
   // useDeleteCanbanBoardMutation,
   // useUpdateCanbanBoardMutation,
