@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 type propsCanbana = {
   column: ColumnTypeStr;
   task: TaskType;
+  isDragOverlay?: boolean;
 };
 const TaskCard: React.FC<propsCanbana> = ({ task, column }) => {
   const { project_name, date, cost, currency, sales_agent } = task;
