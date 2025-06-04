@@ -2,7 +2,6 @@ import {
   DeleteResponse,
   PlaygroundCreatePayload,
   PlaygroundCreateResponse,
-  PlaygroundItem,
   ResponsePlayground,
 } from "@/types/Playground";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; // <-- ".react" bo'lishi shart!
@@ -49,10 +48,13 @@ export const PlaygroundApi = createApi({
       invalidatesTags: ["playground"],
     }),
 
-    updatePlayground: builder.mutation<any, any>({
-      query: (data) => ({
-        url: `/playground/${data.id}`,
-        method: "PUT",
+    updatePlayground: builder.mutation<
+      PlaygroundCreateResponse,
+      { id: number; data: PlaygroundCreatePayload }
+    >({
+      query: ({ id, data }) => ({
+        url: `/playground/${id}`,
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["playground"],

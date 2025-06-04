@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useDeletePlaygroundMutation,
-  useUpdatePlaygroundMutation,
-} from "@/store/slices/playground/PlaygroundApi";
+import { useDeletePlaygroundMutation } from "@/store/slices/playground/PlaygroundApi";
 import { PlaygroundItem } from "@/types/Playground";
 import { Button, Dropdown, MenuProps, Popconfirm, message } from "antd";
 import dayjs from "dayjs";
@@ -19,7 +16,6 @@ type propsBox = {
 
 const PlaygroundBox: React.FC<propsBox> = ({ item, setInitialData }) => {
   const [deleteMut, { isLoading: isDelete }] = useDeletePlaygroundMutation();
-  const [updateMut, { isLoading: isUpdate }] = useUpdatePlaygroundMutation();
 
   const handleDelete = async () => {
     try {
