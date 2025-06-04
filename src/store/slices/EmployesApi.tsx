@@ -45,6 +45,22 @@ export const EmployeesApi = createApi({
             ]
           : [{ type: "Employes", id: "LIST" }],
     }),
+    getEmployesNotParams: builder.query({
+      query: () => ({
+        url: `/employee`,
+        method: "GET",
+      }),
+      providesTags: (result) =>
+        result?.data
+          ? [
+              ...result.data.map((item: EmployesType) => ({
+                type: "Employes" as const,
+                id: item.id,
+              })),
+              { type: "Employes", id: "LIST" },
+            ]
+          : [{ type: "Employes", id: "LIST" }],
+    }),
     // create
     createEmploye: builder.mutation({
       query: (newEmploye: Partial<EmployesType>) => ({
@@ -84,4 +100,5 @@ export const {
   useCreateEmployeMutation,
   useDeleteEmployeMutation,
   useUpdateEmployeMutation,
+  useGetEmployesNotParamsQuery,
 } = EmployeesApi;

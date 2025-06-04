@@ -1,0 +1,67 @@
+"use client";
+
+import { Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+// icons
+import PlaygroundBox from "./PlaygroundBox";
+import { useGetPlaygroundQuery } from "@/store/slices/playground/PlaygroundApi";
+import Loading from "../loading";
+import BoxCreateEditModal from "@/components/playground/BoxCreateEditModal";
+
+const MainPlayground = () => {
+  const { data, isLoading } = useGetPlaygroundQuery();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [initialData, setInitialData] = useState<null | any>(null);
+
+  console.log(initialData);
+  useEffect(() => {
+    if (initialData) {
+      setOpenModal(true);
+    }
+  }, [initialData]);
+
+  if (isLoading) return <Loading />;
+  return (
+    <>
+      <div className="playground">
+        <div className="playground__header">
+          <div className="header-info">
+            <div className="info-title">Task playground</div>
+            <div className="info-paragrph">List of playgrounds</div>
+          </div>
+          <div className="header-btns">
+            <Button
+              onClick={() => setOpenModal(true)}
+              icon={<FaPlus />}
+              iconPosition="start"
+              type="primary"
+            >
+              Add playground
+            </Button>
+          </div>
+        </div>
+        <div className="playground__boxes">
+          {data
+            ? data?.data.map((item) => {
+                return (
+                  <PlaygroundBox
+                    key={item.id}
+                    item={item}
+                    setInitialData={setInitialData}
+                  />
+                );
+              })
+            : "no data"}
+        </div>
+      </div>
+      <BoxCreateEditModal
+        open={openModal}
+        onCancel={() => setOpenModal(false)}
+        initialData={initialData}
+      />
+    </>
+  );
+};
+
+export default MainPlayground;

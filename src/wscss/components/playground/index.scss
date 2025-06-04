@@ -1,0 +1,65 @@
+.playground {
+  background-color: white;
+  padding: 30px 20px;
+  //
+  // header
+  &__header {
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .info-title {
+      font-size: 32px;
+      font-weight: 500;
+    }
+    .info-paragrph {
+      font-size: 20px;
+      font-weight: 400;
+      color: rgb(122, 122, 122);
+    }
+  }
+  //
+  // boxes
+  &__boxes {
+    // display: flex;
+    // align-items: center;
+    // gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 24px;
+    grid-row-gap: 24px;
+    .box {
+      max-width: 377px;
+      width: 100%;
+      height: 150px;
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 2px 4px 3px 1px rgba(0, 0, 0, 0.226);
+      //
+      // box-header
+      &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .header-title {
+          font-size: 24px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+      }
+      //
+      // box-footer
+      &__footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.275);
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@ import { FinanceIncomeApi } from "./slices/finance/FinanceIncomeApi";
 import { FinanceSupportApi } from "./slices/finance/FinanceSupportApi";
 import { ChartApi } from "./slices/finance/ChartApi";
 import { SlCalculatorApi } from "./slices/SalesApi/SlCalculator";
+import { PlaygroundApi } from "./slices/playground/PlaygroundApi";
 // import { UsersApi } from "../features/api/UsersApi";
 // import { ToolsApi } from "../features/api/ToolsApi";
 
@@ -49,6 +50,9 @@ export const store = configureStore({
     [FinanceIncomeApi.reducerPath]: FinanceIncomeApi.reducer,
     [FinanceSupportApi.reducerPath]: FinanceSupportApi.reducer,
     [ChartApi.reducerPath]: ChartApi.reducer,
+
+    // playground
+    [PlaygroundApi.reducerPath]: PlaygroundApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -74,7 +78,9 @@ export const store = configureStore({
       .concat(FinanceIncomeApi.middleware)
       .concat(FinanceExpenseApi.middleware)
       .concat(FinanceSupportApi.middleware)
-      .concat(ChartApi.middleware),
+      .concat(ChartApi.middleware)
+      // // playground
+      .concat(PlaygroundApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

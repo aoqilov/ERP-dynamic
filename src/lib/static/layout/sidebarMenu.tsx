@@ -208,9 +208,9 @@ const sidebarMenu: MenuProps["items"] = [
     ],
   },
   {
-    key: "/task-playground",
+    key: "/playground",
     icon: <FaTasks />,
-    label: <Link href="/task-playground">Task playground</Link>,
+    label: <Link href="/playground">Task playground</Link>,
   },
 ];
 
