@@ -67,6 +67,15 @@ export const PlaygroundApi = createApi({
       }),
       invalidatesTags: ["playground"],
     }),
+    //
+    //
+    getPlaygroundCanbanID: builder.query<any, any>({
+      query: ({ id }) => ({
+        url: `/playground/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["playground"],
+    }),
   }),
 });
 
@@ -75,4 +84,7 @@ export const {
   useCreatePlaygroundMutation,
   useUpdatePlaygroundMutation,
   useDeletePlaygroundMutation,
+  //
+  //
+  useGetPlaygroundCanbanIDQuery,
 } = PlaygroundApi;

@@ -4,6 +4,7 @@ import { useDeletePlaygroundMutation } from "@/store/slices/playground/Playgroun
 import { PlaygroundItem } from "@/types/Playground";
 import { Button, Dropdown, MenuProps, Popconfirm, message } from "antd";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { BiEdit } from "react-icons/bi";
 import { FiDelete } from "react-icons/fi";
@@ -15,6 +16,8 @@ type propsBox = {
 };
 
 const PlaygroundBox: React.FC<propsBox> = ({ item, setInitialData }) => {
+  const router = useRouter();
+
   const [deleteMut, { isLoading: isDelete }] = useDeletePlaygroundMutation();
 
   const handleDelete = async () => {
@@ -73,7 +76,11 @@ const PlaygroundBox: React.FC<propsBox> = ({ item, setInitialData }) => {
   return (
     <div className="box" style={{ border: `1px solid ${item.color}` }}>
       <div className="box__header">
-        <p className="header-title" style={{ color: item.color }}>
+        <p
+          className="header-title"
+          style={{ color: item.color }}
+          onClick={() => router.push(`/playground/${item.id}`)}
+        >
           {item.name}
         </p>
         <Dropdown
