@@ -24,3 +24,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

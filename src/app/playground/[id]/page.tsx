@@ -1,25 +1,40 @@
 "use client";
+import { DndContext } from "@dnd-kit/core";
+import { sections } from "@/lib/static/playground/project";
+import CanbanColumn from "../CanbanColumn";
 
-import { useGetPlaygroundCanbanIDQuery } from "@/store/slices/playground/PlaygroundApi";
-import { useParams } from "next/navigation";
-import React from "react";
+const CanbanMain = () => {
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    console.log("Dragged", active.id, "over", over?.id);
+    // Bu yerga reorder yoki API chaqiruvini keyin qo‘shamiz
+  };
 
-const PlaygroundCanbanid = () => {
-  const { id } = useParams();
-
-  const { data, isLoading, isError } = useGetPlaygroundCanbanIDQuery({ id });
-
-  if (isLoading) return <div>Loading...</div>;
-  console.log(data);
   return (
-    <div className="playcanban">
-      <div className="playcanban__header">
-        <h5>{data?.data.name}</h5>
+    <div className="canbanboard">
+      <div className="canbanboard__header">
+        <div className="header-back">back to main page</div>
+        <h1 className="header-title">Kanban Board</h1>
       </div>
-      <div className="playcanban__board"></div>
-      PlaygroundCanbanboard
+      <DndContext onDragEnd={handleDragEnd}>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            overflowX: "scroll",
+            marginTop: "30px",
+            scrollbarWidth: "none", // Firefox
+            msOverflowStyle: "none", // IE va eski Edge
+          }}
+          className="hide-scrollbar" // 👇 Chrome uchun CSS class (quyida yoziladi)
+        >
+          {sections.map((section) => (
+            <CanbanColumn key={section.id} section={section} />
+          ))}
+        </div>
+      </DndContext>
     </div>
   );
 };
 
-export default PlaygroundCanbanid;
+export default CanbanMain;
