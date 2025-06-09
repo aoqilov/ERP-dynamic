@@ -102,7 +102,9 @@ const ColumnCanban: React.FC<propsCanbana> = ({ column, tasks, mainData }) => {
               height: "100px",
               color: "#a4a4a4",
               fontSize: "14px",
-              border: isOver ? `2px dashed ${column.color}` : "2px dashed transparent",
+              border: isOver
+                ? `2px dashed ${column.color}`
+                : "2px dashed transparent",
               borderRadius: "8px",
               transition: "border-color 0.2s ease",
             }}

@@ -4,7 +4,8 @@ import {
   PlaygroundCreateResponse,
   ResponsePlayground,
 } from "@/types/Playground";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; // <-- ".react" bo'lishi shart!
+
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const PlaygroundApi = createApi({
   reducerPath: "playgroundApi",
@@ -22,15 +23,23 @@ export const PlaygroundApi = createApi({
           headers.set("Authorization", `Bearer ${token}`);
         }
       }
-
       return headers;
     },
   }),
   tagTypes: ["playground"],
   endpoints: (builder) => ({
+    // ✅ PLAYGROUND CRUD
     getPlayground: builder.query<ResponsePlayground, void>({
       query: () => ({
         url: "/playground",
+        method: "GET",
+      }),
+      providesTags: ["playground"],
+    }),
+
+    getPlaygroundCard: builder.query<ResponsePlayground, { id: number }>({
+      query: ({ id }) => ({
+        url: `/playground/${id}`,
         method: "GET",
       }),
       providesTags: ["playground"],
@@ -61,30 +70,69 @@ export const PlaygroundApi = createApi({
     }),
 
     deletePlayground: builder.mutation<DeleteResponse, { id: number }>({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/playground/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["playground"],
     }),
-    //
-    //
-    getPlaygroundCanbanID: builder.query<any, any>({
+
+    // ✅ SECTIONS (USTUNLAR)
+    getPlaygroundSections: builder.query<any, { id: number }>({
       query: ({ id }) => ({
-        url: `/playground/${id}`,
+        url: `/playground-section/find-by-playground/${id}`,
         method: "GET",
       }),
       providesTags: ["playground"],
+    }),
+
+    createPlaygroundColumn: builder.mutation<any, any>({
+      query: (data) => ({
+        url: "/playground-section",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["playground"],
+    }),
+
+    // ✅ TASK KO‘CHIRISH
+    changeOrderOrSection: builder.mutation<any, any>({
+      query: (payload) => ({
+        url: "/playground-section-task/change-order-or-section",
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["playground"],
+    }),
+    patchPlaygroundSection: builder.mutation<any, { id: number; data: any }>({
+      query: ({ data, id }) => ({
+        url: `/playground-section/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["playground"],
+    }),
+    deletePlaygroundSection: builder.mutation<any, { id: number }>({
+      query: ({ id }) => ({
+        url: `/playground-section/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["playground"],
     }),
   }),
 });
 
 export const {
   useGetPlaygroundQuery,
+  useGetPlaygroundCardQuery,
   useCreatePlaygroundMutation,
   useUpdatePlaygroundMutation,
   useDeletePlaygroundMutation,
   //
   //
-  useGetPlaygroundCanbanIDQuery,
+  useGetPlaygroundSectionsQuery,
+  useCreatePlaygroundColumnMutation,
+  useChangeOrderOrSectionMutation,
+  usePatchPlaygroundSectionMutation,
+  useDeletePlaygroundSectionMutation,
 } = PlaygroundApi;

@@ -1,0 +1,227 @@
+"use client";
+
+import React, { useState } from "react";
+import {
+  DndContext,
+  closestCorners,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  useDroppable,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+// Boshlang'ich ustun va itemlar
+type ColumnData = {
+  [key: string]: {
+    id: string;
+    title: string;
+    items: string[];
+  };
+};
+
+const initialData: ColumnData = {
+  fruits: {
+    id: "fruits",
+    title: "Mevalar",
+    items: ["Apple", "Banana"],
+  },
+  cars: {
+    id: "cars",
+    title: "Mashinalar",
+    items: ["Mers", "Green", "Blue", "Tesla", "Sok", "Red"],
+  },
+  colors: {
+    id: "colors",
+    title: "Ranglar",
+    items: [],
+  },
+};
+
+export default function App() {
+  const [columns, setColumns] = useState(initialData);
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const findColumn = (itemId: string): string | undefined => {
+    return Object.keys(columns).find((key) =>
+      columns[key].items.includes(itemId)
+    );
+  };
+
+  const handleDragStart = (event: any) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    const fromColumn = findColumn(activeId);
+    const toColumn = columns[overId] ? overId : findColumn(overId);
+
+    if (!fromColumn || !toColumn) return;
+
+    // Element bir ustun ichida harakatlangan bo'lsa
+    if (fromColumn === toColumn) {
+      const items = [...columns[fromColumn].items];
+      const oldIndex = items.indexOf(activeId);
+      const newIndex = items.indexOf(overId);
+
+      if (oldIndex !== newIndex) {
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        setColumns({
+          ...columns,
+          [fromColumn]: {
+            ...columns[fromColumn],
+            items: newItems,
+          },
+        });
+      }
+    } else {
+      // Element ustundan ustunga ko'chgan holat
+      const fromItems = [...columns[fromColumn].items];
+      const toItems = [...columns[toColumn].items];
+
+      const activeIndex = fromItems.indexOf(activeId);
+      fromItems.splice(activeIndex, 1);
+      toItems.push(activeId);
+
+      setColumns({
+        ...columns,
+        [fromColumn]: {
+          ...columns[fromColumn],
+          items: fromItems,
+        },
+        [toColumn]: {
+          ...columns[toColumn],
+          items: toItems,
+        },
+      });
+    }
+  };
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div style={{ display: "flex", gap: "20px", padding: "20px" }}>
+        {Object.values(columns).map((column) => (
+          <Column key={column.id} {...column} />
+        ))}
+      </div>
+
+      <DragOverlay>
+        {activeId ? <SortableItem id={activeId} isOverlay /> : null}
+      </DragOverlay>
+    </DndContext>
+  );
+}
+
+function Column({
+  id,
+  title,
+  items,
+}: {
+  id: string;
+  title: string;
+  items: string[];
+}) {
+  const { setNodeRef } = useDroppable({ id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        backgroundColor: "#f5f5f5",
+        padding: "16px",
+        borderRadius: "8px",
+        width: "220px",
+        minHeight: "200px",
+      }}
+    >
+      <h3 style={{ textAlign: "center" }}>{title}</h3>
+      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        {items.length === 0 ? (
+          <Placeholder />
+        ) : (
+          items.map((itemId) => <SortableItem key={itemId} id={itemId} />)
+        )}
+      </SortableContext>
+    </div>
+  );
+}
+
+function SortableItem({
+  id,
+  isOverlay = false,
+}: {
+  id: string;
+  isOverlay?: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    backgroundColor: isOverlay ? "#e3f2fd" : isDragging ? "#c8e6c9" : "white",
+    border: "1px solid #ccc",
+    padding: "12px",
+    marginBottom: "8px",
+    borderRadius: "6px",
+    cursor: "grab",
+    opacity: isDragging && !isOverlay ? 0.4 : 1,
+    boxShadow: isOverlay ? "0 4px 12px rgba(0, 0, 0, 0.15)" : "none",
+  };
+
+  return (
+    <div
+      ref={!isOverlay ? setNodeRef : null}
+      style={style}
+      {...(!isOverlay ? attributes : {})}
+      {...(!isOverlay ? listeners : {})}
+    >
+      {id}
+    </div>
+  );
+}
+
+function Placeholder() {
+  return (
+    <div
+      style={{
+        padding: "12px",
+        border: "2px dashed #bbb",
+        borderRadius: "6px",
+        color: "#888",
+        textAlign: "center",
+        fontStyle: "italic",
+        marginBottom: "8px",
+      }}
+    >
+      Drop here
+    </div>
+  );
+}

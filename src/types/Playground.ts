@@ -1,5 +1,5 @@
 export type PlaygroundItem = {
-  id: number;
+  id: number | string;
   created_at: string;
   name: string;
   color: string;
