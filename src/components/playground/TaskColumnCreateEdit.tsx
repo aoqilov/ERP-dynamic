@@ -36,7 +36,6 @@ export default function TaskColumnCreateEdit({
     usePatchPlaygroundSectionMutation(); // Assuming you have a mutation for editing columns
   const [form] = Form.useForm();
   const [selectedColor, setSelectedColor] = useState(COLORS[0].color);
-  console.log("initialData", initialData);
   useEffect(() => {
     if (initialData) {
       form.setFieldsValue({

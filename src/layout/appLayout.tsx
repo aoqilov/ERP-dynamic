@@ -1,15 +1,18 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
-import { Layout, Spin, Flex } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Layout, Spin, Flex, Button, Menu, MenuProps, Popconfirm } from "antd";
+import {
+  LoadingOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 import { store } from "@/store/store";
 import { Provider } from "react-redux";
 import sidebarMenu from "@/lib/static/layout/sidebarMenu";
 import Image from "next/image";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Menu } from "antd";
 import dayjs from "dayjs";
+import { MdLogout } from "react-icons/md";
 
 const { Sider, Content } = Layout;
 
@@ -27,18 +30,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const expiration = localStorage.getItem("token_expiration");
-
     const isLoginPage = pathname.startsWith("/auth/login");
 
-    if (expiration) {
-      const now = dayjs();
-      const expirationDate = dayjs(expiration);
+    const isExpired = expiration && dayjs().isAfter(dayjs(expiration));
 
-      if (expirationDate.isBefore(now)) {
-        localStorage.clear();
-        router.push("/auth/login");
-        return;
-      }
+    if (isExpired) {
+      localStorage.clear();
+      router.push("/auth/login");
+      return;
     }
 
     if (!token && !isLoginPage) {
@@ -55,6 +54,29 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     return () => clearTimeout(timer);
   }, [pathname, router]);
+  //
+  const handleMenuClick = () => {
+    localStorage.clear();
+    router.push("/auth/login");
+  };
+  const menuItemsBottom: MenuProps["items"] = [
+    {
+      key: "logout",
+      icon: <MdLogout color="red" size={25} />,
+      label: (
+        <Popconfirm
+          title="Are you sure you want to log out?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={handleMenuClick}
+        >
+          <p style={{ color: "red", fontWeight: "500", fontSize: 16 }}>
+            Log out
+          </p>
+        </Popconfirm>
+      ),
+    },
+  ];
 
   if (!isMounted || !authorized) {
     return (
@@ -93,7 +115,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <div className="header__user">
           <Image
             src="https://test.erp.dynamicsoft.uz/static/media/user.d6cdb573af00fde2b9ea789ebf0c5003.svg"
-            alt="sd"
+            alt="user"
             width={40}
             height={40}
           />
@@ -116,13 +138,31 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           collapsed={collapsed}
           style={{ overflowY: "auto" }}
         >
-          <Menu
-            className="sidebar__menu"
-            mode="inline"
-            items={sidebarMenu}
-            selectedKeys={[pathname]}
-            defaultOpenKeys={openKeys}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "column",
+              height: "100%",
+            }}
+          >
+            <Menu
+              className="sidebar__menu"
+              mode="inline"
+              items={sidebarMenu}
+              selectedKeys={[pathname]}
+              defaultOpenKeys={openKeys}
+            />
+            <div
+              style={{ borderTop: "1px solid #e8e8e8", marginBottom: "10px" }}
+            >
+              <Menu
+                mode="inline"
+                items={menuItemsBottom}
+                className="mb-4 border-0"
+              />
+            </div>
+          </div>
         </Sider>
         <Provider store={store}>
           <Content className="content">{children}</Content>

@@ -6,11 +6,15 @@ import TaskCard from "./TaskCard";
 import { Button, Dropdown, MenuProps, Popconfirm } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { useDroppable } from "@dnd-kit/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdMore } from "react-icons/io";
 import { HiOutlinePencil } from "react-icons/hi2";
 import { GoTrash } from "react-icons/go";
-import { useDeletePlaygroundSectionMutation } from "@/store/slices/playground/PlaygroundApi";
+import {
+  useDeletePlaygroundSectionMutation,
+  useGetPlaygroundSectionsQuery,
+} from "@/store/slices/playground/PlaygroundApi";
+import TaskCardCreateEdit from "@/components/playground/TaskCardCreateEdit";
 
 interface Task {
   id: number;
@@ -22,15 +26,26 @@ interface Column {
   title: string;
   items: Task[];
   setSelectedColumn: (column: any) => void;
+  employees?: any[] | undefined;
 }
 
 const CanbanColumn: React.FC<Column> = ({
   column,
   items,
   setSelectedColumn,
+  employees,
 }) => {
+  // TASK CARD OPEN for modal
+  const [cardOpen, setCardOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any | null>(null);
+  //
+  // DELETE SECTION
   const [deleteSection, { isLoading: isDeleteLoading }] =
     useDeletePlaygroundSectionMutation();
+  //
+  // REFETCH SECTIONS
+  const { refetch } = useGetPlaygroundSectionsQuery({ id: Number(column.id) });
+  // MENU ITEMS FOR MORE OPTIONS
   const itemsMore: MenuProps["items"] = [
     {
       key: "edit",
@@ -43,7 +58,11 @@ const CanbanColumn: React.FC<Column> = ({
       label: (
         <Popconfirm
           title="Are you sure to delete this column?"
-          onConfirm={() => deleteSection({ id: column.id }).unwrap()}
+          onConfirm={() =>
+            deleteSection({ id: column.id })
+              .unwrap()
+              .then(() => refetch())
+          }
           okText="Yes"
           cancelText="No"
           okButtonProps={{ loading: isDeleteLoading }}
@@ -55,7 +74,13 @@ const CanbanColumn: React.FC<Column> = ({
       ),
     },
   ];
-
+  useEffect(() => {
+    if (selectedTask) {
+      setCardOpen(true);
+    } else {
+      setCardOpen(false);
+    }
+  }, [selectedTask]);
   const { setNodeRef } = useDroppable({ id: column.id });
   return (
     <div
@@ -96,6 +121,7 @@ const CanbanColumn: React.FC<Column> = ({
               items: itemsMore,
               onClick: ({ key }) => {
                 if (key === "edit") {
+                  // Edit rejimiga o'tish
                   setSelectedColumn(column); // column tanlandi
                 }
                 if (key === "delete") {
@@ -114,12 +140,25 @@ const CanbanColumn: React.FC<Column> = ({
         icon={<FaPlus />}
         block
         style={{ margin: "8px 0" }}
+        onClick={() => {
+          setCardOpen(true);
+        }}
       >
         New task
       </Button>
-
+      <TaskCardCreateEdit
+        open={cardOpen}
+        oncancel={() => {
+          setCardOpen(false);
+          setSelectedTask(null);
+        }}
+        selectedTask={selectedTask}
+        employees={employees}
+        colId={column.id}
+      />
       <SortableContext
-        items={column.items.map((task) => task.id)}
+        items={column.items.map((task) => task.id.toString())}
+        id={column.id}
         strategy={verticalListSortingStrategy}
       >
         {column.items.length === 0 ? (
@@ -142,6 +181,7 @@ const CanbanColumn: React.FC<Column> = ({
               id={task.id}
               task={task}
               color={column.color}
+              setSelectedTask={setSelectedTask}
             />
           ))
         )}

@@ -40,11 +40,14 @@ type Task = {
   passed_time: number;
 };
 
-type Column = {
+interface Column {
   id: string;
   title: string;
+  color?: string; // ← shu qo‘shilsin
   items: Task[];
-};
+  setSelectedColumn: (column: any) => void;
+  employees?: any[] | undefined;
+}
 
 type Columns = {
   [key: string]: Column;
@@ -66,7 +69,6 @@ export default function CanbanMainPlayground() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor));
-
   useEffect(() => {
     if (dataTask?.data) {
       const formatted: Columns = dataTask.data.reduce((acc, section) => {
@@ -105,103 +107,74 @@ export default function CanbanMainPlayground() {
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     setActiveTask(null);
-
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
 
     const fromColumn = findColumnByTaskId(activeId);
-    const toColumn =
-      findColumnByTaskId(overId) || (columns[overId] ? overId : undefined);
+    let toColumn = findColumnByTaskId(overId);
+
+    if (!toColumn && columns[overId]) {
+      toColumn = overId;
+    }
 
     if (!fromColumn || !toColumn) return;
 
-    const fromItems = [...columns[fromColumn].items];
-    const toItems = [...columns[toColumn].items];
+    const fromItems = [...(columns[fromColumn]?.items || [])];
+    let toItems = [...(columns[toColumn]?.items || [])];
 
-    const taskIndex = fromItems.findIndex((task) => task.id === activeId);
-    if (taskIndex === -1) return;
+    const fromIndex = fromItems.findIndex((task) => task.id === activeId);
+    if (fromIndex === -1) return;
 
-    const [movedTask] = fromItems.splice(taskIndex, 1);
+    const [movedTask] = fromItems.splice(fromIndex, 1);
 
-    const dropTaskIndex = toItems.findIndex((task) => task.id === overId);
-
-    if (fromColumn === toColumn) {
-      // Bir column ichida tartib o‘zgarayotgan bo‘lsa
-      const newItems = arrayMove(
-        toItems,
-        taskIndex,
-        dropTaskIndex === -1 ? toItems.length : dropTaskIndex
-      );
-
-      const newColumns = {
-        ...columns,
-        [fromColumn]: {
-          ...columns[fromColumn],
-          items: newItems,
-        },
-      };
-
-      setColumns(newColumns);
-
-      const payload = Object.values(newColumns).map((column) => ({
-        playground_section_id: Number(column.id),
-        playground_section_tasks: column.items.map((task, index) => ({
-          id: task.id,
-          order: index,
-        })),
-      }));
-
-      changeOrderOrSection({ orders: payload })
-        .unwrap()
-        .then(() => {
-          console.log("Orderlar muvaffaqiyatli yuborildi ✅");
-        })
-        .catch((err) => {
-          console.error("Yuborishda xatolik ❌", err);
-        });
-    } else {
-      // Columnlar o‘zgargan bo‘lsa
-      if (dropTaskIndex === -1) {
-        // Bo‘sh column yoki columnga tashlandi
-        toItems.push(movedTask);
-      } else {
-        // Task ustiga tashlandi
-        toItems.splice(dropTaskIndex, 0, movedTask);
-      }
-
-      const newColumns = {
-        ...columns,
-        [fromColumn]: {
-          ...columns[fromColumn],
-          items: fromItems,
-        },
-        [toColumn]: {
-          ...columns[toColumn],
-          items: toItems,
-        },
-      };
-
-      setColumns(newColumns);
-
-      const payload = Object.values(newColumns).map((column) => ({
-        playground_section_id: Number(column.id),
-        playground_section_tasks: column.items.map((task, index) => ({
-          id: task.id,
-          order: index,
-        })),
-      }));
-
-      changeOrderOrSection({ orders: payload })
-        .unwrap()
-        .then(() => {
-          console.log("Orderlar muvaffaqiyatli yuborildi ✅");
-        })
-        .catch((err) => {
-          console.error("Yuborishda xatolik ❌", err);
-        });
+    // **🎯 Bo‘sh ustunga tushgan bo‘lsa, yangi task qo‘shish**
+    if (toItems.length === 0) {
+      toItems = [];
     }
+
+    let dropIndex = toItems.findIndex((task) => task.id === overId);
+    if (dropIndex === -1) {
+      dropIndex = toItems.length;
+    }
+
+    // **🔄 Yangi column holatini yangilash**
+    let newColumns = { ...columns };
+
+    toItems.splice(dropIndex, 0, movedTask);
+
+    newColumns = {
+      ...columns,
+      [fromColumn]: {
+        ...columns[fromColumn],
+        items: fromItems,
+      },
+      [toColumn]: {
+        ...columns[toColumn],
+        items: toItems,
+      },
+    };
+
+    console.log("🔄 Yangi column holati:", newColumns);
+
+    setColumns(newColumns);
+
+    // **📤 Serverga to‘g‘ri formatlangan ma’lumot yuborish**
+    const payload = Object.values(newColumns).map((column) => ({
+      playground_section_id: Number(column.id),
+      playground_section_tasks: column.items.map((task, index) => ({
+        id: task.id,
+        order: index,
+      })),
+    }));
+
+    changeOrderOrSection({ orders: payload })
+      .unwrap()
+      .then(() => console.log("✅ Order muvaffaqiyatli yangilandi"))
+      .catch((err) =>
+        console.error("❌ Serverga order yuborishda xatolik:", err)
+      );
   };
 
   const [open, setOpen] = useState(false);
@@ -279,13 +252,15 @@ export default function CanbanMainPlayground() {
             <CanbanColumn
               key={column.id}
               column={column}
+              items={column.items}
               setSelectedColumn={setSelectedColumn}
+              employees={data?.data.employees}
             />
           ))}
         </div>
 
         <DragOverlay>
-          {activeTask ? <TaskCard task={activeTask} isOverlay /> : null}
+          {activeTask ? <TaskCard task={activeTask} /> : null}
         </DragOverlay>
       </DndContext>
     </div>

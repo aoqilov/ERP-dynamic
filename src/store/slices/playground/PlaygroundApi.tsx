@@ -119,6 +119,30 @@ export const PlaygroundApi = createApi({
       }),
       invalidatesTags: ["playground"],
     }),
+    // ✅ TASK CRUD card
+    createPlaygroundCard: builder.mutation<any, any>({
+      query: (data) => ({
+        url: "/playground-section-task",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["playground"],
+    }),
+    deletePlaygroundCard: builder.mutation<any, { id: number }>({
+      query: ({ id }) => ({
+        url: `/playground-section-task/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["playground"],
+    }),
+    patchPlaygroundCard: builder.mutation<any, { id: number; data: any }>({
+      query: ({ id, data }) => ({
+        url: `playground-section-task/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["playground"],
+    }),
   }),
 });
 
@@ -135,4 +159,9 @@ export const {
   useChangeOrderOrSectionMutation,
   usePatchPlaygroundSectionMutation,
   useDeletePlaygroundSectionMutation,
+  //
+  //
+  useCreatePlaygroundCardMutation,
+  useDeletePlaygroundCardMutation,
+  usePatchPlaygroundCardMutation,
 } = PlaygroundApi;

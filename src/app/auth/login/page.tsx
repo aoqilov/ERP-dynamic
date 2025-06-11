@@ -1,4 +1,5 @@
 "use client";
+
 import { Button, Form, Input, message } from "antd";
 import Image from "next/image";
 import React from "react";
@@ -29,12 +30,13 @@ const LoginPage = () => {
       if (!isLoading) {
         localStorage.setItem("token", JSON.stringify(res?.data.token));
         localStorage.setItem("userData", JSON.stringify(res?.data));
-        //
+
+        // 7 kunlik token yaroqlilik muddati
         const dateOnly = dayjs().add(7, "day").format("YYYY-MM-DD,HH:mm");
         localStorage.setItem("token_expiration", JSON.stringify(dateOnly));
 
         messageApi.success("LOGIN SUCCESS");
-        router.push("/projects"); //
+        router.push("/projects");
       }
       console.log(res);
     } catch (err) {
@@ -57,7 +59,7 @@ const LoginPage = () => {
         />
         <Image
           src="https://test.erp.dynamicsoft.uz/static/media/back-line.6ec1d923e7e1fd2f94d803746f5418a6.svg"
-          alt="logo"
+          alt="line"
           width={360}
           height={200}
           className="logo-line"
@@ -84,6 +86,7 @@ const LoginPage = () => {
               placeholder="Your username..."
             />
           </Form.Item>
+
           <Form.Item
             label="Password"
             name="password"
@@ -123,6 +126,7 @@ const LoginPage = () => {
               placeholder="Your password..."
             />
           </Form.Item>
+
           <Button
             htmlType="submit"
             size="large"

@@ -50,7 +50,7 @@ export const SlCanbanApi = createApi({
 
     updateCanbanOrder: builder.mutation<any, any>({
       query: (canbans) => ({
-        url: '/canban/update-canban-order',
+        url: "/canban/update-canban-order",
         method: "PATCH",
         body: canbans,
       }),
@@ -58,12 +58,11 @@ export const SlCanbanApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          
+
           setTimeout(() => {
             dispatch(SlCanbanApi.util.invalidateTags(["SlCanban"]));
             console.log("Manual cache invalidation triggered");
           }, 1000);
-          
         } catch (error) {
           console.error("Mutation failed:", error);
         }
