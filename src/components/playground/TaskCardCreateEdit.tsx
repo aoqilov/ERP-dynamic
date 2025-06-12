@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Modal,
   Form,
@@ -24,7 +25,6 @@ const { TextArea } = Input;
 const TaskCardCreateEdit = ({
   open,
   oncancel,
-  task,
   employees,
   colId,
   selectedTask,

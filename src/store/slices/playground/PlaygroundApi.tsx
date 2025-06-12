@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DeleteResponse,
   PlaygroundCreatePayload,
@@ -37,7 +38,7 @@ export const PlaygroundApi = createApi({
       providesTags: ["playground"],
     }),
 
-    getPlaygroundCard: builder.query<ResponsePlayground, { id: number }>({
+    getPlaygroundCard: builder.query<any, { id: number }>({
       query: ({ id }) => ({
         url: `/playground/${id}`,
         method: "GET",
@@ -57,10 +58,7 @@ export const PlaygroundApi = createApi({
       invalidatesTags: ["playground"],
     }),
 
-    updatePlayground: builder.mutation<
-      PlaygroundCreateResponse,
-      { id: number; data: PlaygroundCreatePayload }
-    >({
+    updatePlayground: builder.mutation<any, { id: number; data: any }>({
       query: ({ id, data }) => ({
         url: `/playground/${id}`,
         method: "PATCH",

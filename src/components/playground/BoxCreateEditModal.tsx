@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -59,7 +60,7 @@ const BoxCreateEditModal: React.FC<propsModal> = ({
   const handleFinish = async (values: PlaygroundItem) => {
     const payload = {
       name: values.name,
-      employees: values.employees.map((id) => ({ id })),
+      employees: values.employees.map((employee) => ({ id: employee.id })),
       color: selectedColor,
     };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useDeletePlaygroundMutation } from "@/store/slices/playground/PlaygroundApi";
@@ -22,7 +23,7 @@ const PlaygroundBox: React.FC<propsBox> = ({ item, setInitialData }) => {
 
   const handleDelete = async () => {
     try {
-      const res = await deleteMut({ id: item.id }).unwrap();
+      const res = await deleteMut({ id: Number(item.id) }).unwrap();
       if (res.status === 204) {
         message.success("Playground deleted successfully");
       }

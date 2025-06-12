@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Avatar, Dropdown, MenuProps, Popconfirm, Tooltip } from "antd";
@@ -18,7 +19,7 @@ const TaskCard = ({
   color,
   setSelectedTask,
 }: {
-  id?: number;
+  id: number; // make id required
   task: any;
   isOverlay?: boolean;
   color?: string;

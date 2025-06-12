@@ -11,14 +11,15 @@ export type PlaygroundItem = {
       name: string;
     };
   };
-  employees: {
+  employees: Employee[];
+};
+export type Employee = {
+  id: number;
+  fullname: string;
+  job_title: {
     id: number;
-    fullname: string;
-    job_title: {
-      id: number;
-      name: string;
-    };
-  }[];
+    name: string;
+  };
 };
 export type ResponsePlayground = {
   data: PlaygroundItem[];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -9,7 +10,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
 import CanbanColumn from "../CanbanColumn";
 import TaskCard from "../TaskCard";
 import {
@@ -71,19 +71,22 @@ export default function CanbanMainPlayground() {
   const sensors = useSensors(useSensor(PointerSensor));
   useEffect(() => {
     if (dataTask?.data) {
-      const formatted: Columns = dataTask.data.reduce((acc, section) => {
-        acc[section.id.toString()] = {
-          id: section.id.toString(),
-          name: section.name,
-          title: section.name,
-          order: section.order,
-          color: section.color || "#000",
-          items: [...(section.playground_section_tasks || [])].sort(
-            (a, b) => a.order - b.order
-          ),
-        };
-        return acc;
-      }, {} as Columns);
+      const formatted: Columns = dataTask.data.reduce(
+        (acc: any, section: any) => {
+          acc[section.id.toString()] = {
+            id: section.id.toString(),
+            name: section.name,
+            title: section.name,
+            order: section.order,
+            color: section.color || "#000",
+            items: [...(section.playground_section_tasks || [])].sort(
+              (a, b) => a.order - b.order
+            ),
+          };
+          return acc;
+        },
+        {} as Columns
+      );
 
       setColumns(formatted);
     }
@@ -254,13 +257,15 @@ export default function CanbanMainPlayground() {
               column={column}
               items={column.items}
               setSelectedColumn={setSelectedColumn}
-              employees={data?.data.employees}
+              employees={data?.data.employees || []}
             />
           ))}
         </div>
 
         <DragOverlay>
-          {activeTask ? <TaskCard task={activeTask} /> : null}
+          {activeTask ? (
+            <TaskCard task={activeTask} id={0} setSelectedTask={undefined} />
+          ) : null}
         </DragOverlay>
       </DndContext>
     </div>

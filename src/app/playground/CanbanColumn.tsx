@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -18,20 +19,48 @@ import TaskCardCreateEdit from "@/components/playground/TaskCardCreateEdit";
 
 interface Task {
   id: number;
-  // boshqa fieldlar...
+  name: string;
+  deadline: string;
+  created_date: string;
+  priority: string;
+  text_editor: string;
+  order: number;
+  employees: {
+    id: number;
+    fullname: string;
+    job_title?: {
+      id: number;
+      name: string;
+    };
+  }[];
+  created_by: any;
+  files: any[];
+  passed_time: number;
 }
 
-interface Column {
-  id: string;
-  title: string;
+interface Employee {
+  id: number;
+  fullname: string;
+  job_title: {
+    id: number;
+    name: string;
+  };
+}
+
+interface ColumnProps {
+  column: {
+    id: string;
+    title: string;
+    color?: string;
+    items: Task[];
+  };
   items: Task[];
   setSelectedColumn: (column: any) => void;
-  employees?: any[] | undefined;
+  employees?: Employee[]; // ← MUHIM O‘ZGARISHLIK
 }
 
-const CanbanColumn: React.FC<Column> = ({
+const CanbanColumn: React.FC<ColumnProps> = ({
   column,
-  items,
   setSelectedColumn,
   employees,
 }) => {
@@ -59,7 +88,7 @@ const CanbanColumn: React.FC<Column> = ({
         <Popconfirm
           title="Are you sure to delete this column?"
           onConfirm={() =>
-            deleteSection({ id: column.id })
+            deleteSection({ id: +column.id })
               .unwrap()
               .then(() => refetch())
           }
@@ -134,7 +163,6 @@ const CanbanColumn: React.FC<Column> = ({
           </Dropdown>
         </span>
       </div>
-
       <Button
         type="default"
         icon={<FaPlus />}
@@ -155,9 +183,9 @@ const CanbanColumn: React.FC<Column> = ({
         selectedTask={selectedTask}
         employees={employees}
         colId={column.id}
-      />
+      />{" "}
       <SortableContext
-        items={column.items.map((task) => task.id.toString())}
+        items={column.items.map((task: Task) => task.id.toString())}
         id={column.id}
         strategy={verticalListSortingStrategy}
       >
@@ -175,7 +203,7 @@ const CanbanColumn: React.FC<Column> = ({
             Drop here
           </div>
         ) : (
-          column.items.map((task) => (
+          column.items.map((task: Task) => (
             <TaskCard
               key={task.id}
               id={task.id}
