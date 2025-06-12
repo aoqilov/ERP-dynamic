@@ -19,7 +19,7 @@ const ModalRegionEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
         ...oneData,
       });
     }
-  }, [oneData]);
+  }, [oneData, form]);
 
   async function handleSubmit(values: JobTitle) {
     await updataEditData({ id: oneData?.id, body: values });

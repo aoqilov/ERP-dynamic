@@ -46,7 +46,7 @@ const ModalUpdate: React.FC<Props> = ({ open, onCancel, oneEmploye }) => {
       });
     } else {
     }
-  }, [oneEmploye]);
+  }, [oneEmploye, form]);
 
   const handleFinish = async (values: EmployesType) => {
     const birthDateMs = dayjs(values.birth_date).valueOf(); // yoki toDate().getTime()
@@ -57,7 +57,7 @@ const ModalUpdate: React.FC<Props> = ({ open, onCancel, oneEmploye }) => {
       password: null,
       salary: Number(values.salary),
       work_experience: { id: +values.work_experience },
-      company: [{ id: +values.company }], // E’tibor bering: array of object
+      company: { id: +values.company }, // single object with id
       region: { id: +values.region },
       job_title: { id: +values.job_title },
       currency: { id: +values.currency },

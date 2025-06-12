@@ -27,7 +27,7 @@ const ModalIntegrationEdit: React.FC<Props> = ({ cancel, open, oneData }) => {
         ...oneData,
       });
     }
-  }, [oneData]);
+  }, [oneData, form]);
 
   async function handleSubmit(values: CurrencyType) {
     await updataEditData({ id: oneData?.id, body: values });

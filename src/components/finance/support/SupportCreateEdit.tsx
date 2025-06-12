@@ -61,14 +61,14 @@ const SupportCreateEdit: React.FC<PropsCreate> = ({
 
     try {
       if (editData) {
-        const resUp = await updateMutate({
+        const resUp: any = await updateMutate({
           id: editData.id,
           data: newData,
         }).unwrap();
-        api.success({ message: resUp.message });
+        api.success({ message: resUp?.message || "Successfully updated" });
       } else {
-        const resCre = await createMutate(newData).unwrap();
-        api.success({ message: resCre.message });
+        const resCre: any = await createMutate(newData).unwrap();
+        api.success({ message: resCre?.message || "Successfully created" });
       }
       form.resetFields();
       createCloes();

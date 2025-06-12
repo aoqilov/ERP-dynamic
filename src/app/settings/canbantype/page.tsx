@@ -27,7 +27,7 @@ const CanbanPage = () => {
 
   useEffect(() => {
     refetch();
-  }, [isOpenEdit]);
+  }, [isOpenEdit, refetch]);
 
   const [api, contextHolder] = notification.useNotification();
   const [updateStatus, { isLoading: isLoadStatus }] =

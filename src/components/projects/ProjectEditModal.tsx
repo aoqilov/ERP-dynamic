@@ -30,7 +30,7 @@ const ProjectEditModal: React.FC<PropsProjects> = ({
       status: editData.status,
       comment: "",
     });
-  }, [editData]);
+  }, [editData, form]);
 
   const [updateProject, { isLoading }] = useUpdateProjectMutation();
 

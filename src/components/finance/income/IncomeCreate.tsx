@@ -69,16 +69,16 @@ const IncomeCreate: React.FC<PropsCreate> = ({
       sales_agent: {
         id:
           typeof values.sales_agent === "object" && values.sales_agent !== null
-            ? values.sales_agent.id
-            : values.sales_agent,
+            ? Number(values.sales_agent.id)
+            : Number(values.sales_agent),
       },
       income_types: Array.isArray(values.income_types)
         ? values.income_types.map((item) =>
             typeof item === "object" && item !== null
-              ? { id: item.id }
-              : { id: item }
+              ? { id: typeof item.id === "number" ? item.id : Number(item.id) }
+              : { id: Number(item) }
           )
-        : [{ id: values.income_types }],
+        : [{ id: Number(values.income_types) }],
     };
 
     try {

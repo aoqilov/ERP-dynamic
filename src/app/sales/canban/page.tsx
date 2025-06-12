@@ -86,7 +86,7 @@ const CanbanPage = () => {
       points: [
         {
           x: totalTaskNumber, // umumiy qiymat (total)
-          y: "Muzaffarxon Abdusalomov", // xaxis.categories dagi qiymat
+          y: 0, // xaxis.categories dagi qiymat (index of "Muzaffarxon Abdusalomov")
           marker: {
             size: 0, // markerni yo'q qilamiz
           },

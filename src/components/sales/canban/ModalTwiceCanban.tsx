@@ -51,7 +51,7 @@ const ModalTwiceCanban: React.FC<PropsModalTwice> = ({
   const [activeId, setActiveId] = useState<number | null>(null);
   const [api, context] = notification.useNotification();
 
-  const [createCanban, { isLoading }] = useCreateCanbanBoardMutation();
+  const [createCanban] = useCreateCanbanBoardMutation();
   const [updateCanban] = useUpdateCanbanBoardMutation();
   useEffect(() => {
     if (activeStatus) {
@@ -66,13 +66,13 @@ const ModalTwiceCanban: React.FC<PropsModalTwice> = ({
         canban_status: { id: activeId },
         sales_agent: { id: editData.sales_agent },
         currency: { id: editData.currency },
-        date: +editData.da,
+        date: +editData.date,
         cost: +editData.cost,
       });
     } else {
       form.resetFields();
     }
-  }, [editData, form]);
+  }, [editData, form, activeId]);
 
   async function handleSubmit(values: any) {
     const joinDateMs = dayjs(values.date).valueOf();

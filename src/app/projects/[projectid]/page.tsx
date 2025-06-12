@@ -63,7 +63,7 @@ const ProjectOnePage = () => {
       });
     }
     //  for body scrool
-  }, [project, todos]);
+  }, [project, todos, form]);
 
   if (isLoading) return <p>Yuklanmoqda pppp...</p>;
   if (error) return <p>Xatolik yuz berdi</p>;

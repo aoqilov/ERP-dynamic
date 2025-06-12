@@ -29,12 +29,6 @@ interface ColumnType {
   tasks: number[];
 }
 
-interface OrderUpdatePayload {
-  taskId: number;
-  newOrder: number;
-  columnId: number;
-}
-
 const KanbanBoard: React.FC = () => {
   const [columns, setColumns] = useState<Record<number, ColumnType>>({});
   const [tasks, setTasks] = useState<Record<number, TaskType>>({});
@@ -57,8 +51,8 @@ const KanbanBoard: React.FC = () => {
     if (!isLoading && apiData?.data) {
       const currentTime = Date.now();
       const data = apiData.data as ColumnData[];
-      
-      if (isUpdating && (currentTime - lastUpdateTimestamp) < 3000) {
+
+      if (isUpdating && currentTime - lastUpdateTimestamp < 3000) {
         return;
       }
 
@@ -82,50 +76,47 @@ const KanbanBoard: React.FC = () => {
 
       setColumns(cols);
       setTasks(tasksMap);
-      
+
       if (isUpdating) {
         setIsUpdating(false);
       }
     }
   }, [apiData, isLoading, isUpdating, lastUpdateTimestamp]);
 
-  const buildBackendPayload = (
-    columns: Record<number, ColumnType>,
-    tasks: Record<number, TaskType>
-  ) => {
-    return { 
+  const buildBackendPayload = (columns: Record<number, ColumnType>) => {
+    return {
       orders: Object.values(columns).map((col) => ({
         status: col.id,
         canban: col.tasks.map((taskId, idx) => ({
           id: taskId,
           order: idx,
         })),
-      }))
+      })),
     };
   };
 
   const updateTaskOrder = async () => {
     setIsUpdating(true);
     setLastUpdateTimestamp(Date.now());
-    
-    const payload = buildBackendPayload(columns, tasks);
-    
+
+    const payload = buildBackendPayload(columns);
+
     try {
       const result = await updateCanbanOrder(payload).unwrap();
-      
-      const isSuccess = result && (
-        result.success === true || 
-        result.status === 'success' || 
-        result.message?.includes('success') ||
-        !result.error
-      );
-      
+
+      const isSuccess =
+        result &&
+        (result.success === true ||
+          result.status === "success" ||
+          result.message?.includes("success") ||
+          !result.error);
+
       if (!isSuccess) {
         setIsUpdating(false);
         refetch();
       }
-      
     } catch (error) {
+      console.error("Error updating task order:", error);
       setIsUpdating(false);
       refetch();
     }
@@ -195,7 +186,7 @@ const KanbanBoard: React.FC = () => {
         items.splice(oldIdx, 1);
         if (newIdx > oldIdx) newIdx--;
         items.splice(newIdx, 0, activeId);
-        
+
         setColumns((prev) => ({
           ...prev,
           [sourceCol.id]: { ...prev[sourceCol.id], tasks: items },
@@ -209,7 +200,7 @@ const KanbanBoard: React.FC = () => {
       if (oldIdx !== -1) {
         sourceItems.splice(oldIdx, 1);
         destItems.splice(insertIdx, 0, activeId);
-        
+
         setColumns((prev) => ({
           ...prev,
           [sourceCol.id]: { ...prev[sourceCol.id], tasks: sourceItems },

@@ -64,13 +64,19 @@ const ExpenseCreate: React.FC<PropsCreate> = ({
       cost: +values.cost,
       current_rate: +values.current_rate,
       expense_types: Array.isArray(values.expense_types)
-        ? values.expense_types.map(
-            (item) =>
+        ? values.expense_types.map((item: any) => ({
+            id:
               typeof item === "object" && item !== null
-                ? { id: item.id } // item object bo‘lsa
-                : { id: item } // item number bo‘lsa
-          )
-        : [{ id: values.expense_types }],
+                ? typeof item.id === "number"
+                  ? item.id
+                  : typeof item.id === "object" &&
+                    item.id !== null &&
+                    "id" in item.id
+                  ? (item.id as any).id
+                  : Number(item.id)
+                : Number(item),
+          }))
+        : [{ id: Number(values.expense_types) }],
     };
 
     try {
