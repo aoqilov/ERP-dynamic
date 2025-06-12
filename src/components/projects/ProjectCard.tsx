@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { VscEdit } from "react-icons/vsc";
 import "@/wscss/components/projects/_projectCard.scss";
 import { ProjectType } from "@/types/Project";
+import { Progress, ProgressProps } from "antd";
 
 interface propsProjects {
   projects: ProjectType[];
@@ -28,6 +29,12 @@ const ProjectCard: React.FC<propsProjects> = ({ projects }) => {
     setIsEditOpen(false);
     setEditProjectData(null);
   };
+  const getColor = (value: number) => {
+    if (value >= 100) return "#00F700";
+    if (value >= 60) return "blue";
+    if (value >= 30) return "#FFCC00";
+    return "#FA001C";
+  };
 
   return (
     <>
@@ -48,7 +55,7 @@ const ProjectCard: React.FC<propsProjects> = ({ projects }) => {
               </div>
             </div>
             <div className="card-foter">
-              <div className="foter-times">
+              <div className="foter-times" style={{ textAlign: "center" }}>
                 <div className="time-start">
                   <LuCalendarClock size={13} color="rgba(104, 102, 102, 1)" />
                   <p className="start-text">
@@ -63,7 +70,28 @@ const ProjectCard: React.FC<propsProjects> = ({ projects }) => {
                   </p>
                 </div>
               </div>
-              <div className="foter-progres"></div>
+              <div className="foter-progres">
+                <Progress
+                  percent={item.passed_time}
+                  strokeColor={getColor(item.passed_time)}
+                  strokeWidth={23}
+                  format={(percent) => (
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "5px",
+                        transform: "translateX(-50%)",
+                        color: "white",
+                        fontSize: 14,
+                      }}
+                    >
+                      {percent}%
+                    </span>
+                  )}
+                  strokeLinecap="butt"
+                />
+              </div>
             </div>
           </div>
         ))

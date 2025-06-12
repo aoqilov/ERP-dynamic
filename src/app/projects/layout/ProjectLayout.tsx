@@ -58,7 +58,7 @@ const ProjectLayout = () => {
         </div>
         <ProjectAddModal />
       </div>
-      <div className="project__cards">
+      <div className="project__cards" style={{ marginBottom: "50px" }}>
         <ProjectCard projects={projects?.data ?? []} />
       </div>
     </div>
